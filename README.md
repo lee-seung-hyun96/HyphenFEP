@@ -1,6 +1,6 @@
 # HyphenFEP
 hyphen FB dev unit
-![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=250&section=header&text=Hi%20there!%20👋&fontSize=70&fontAlignY=40)
+![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=250&section=header&text=HYPHEN%20금융개발유닛%20👀&fontSize=70&fontAlignY=40)
 
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fpeterhyun1234)](https://hits.seeyoufarm.com) 
 
