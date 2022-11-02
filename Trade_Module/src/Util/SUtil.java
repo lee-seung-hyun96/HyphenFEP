@@ -40,35 +40,40 @@ public class SUtil
 //		return null;
 //	}
 	
-	static String toHanE(byte[] bsrc, String encoding_type)
+	//가상계좌
+	public static String toHanX(byte[] bsrc, int idx, int len)
+	{
+		String str = toHan(bsrc, idx, len);
+		if (str == null) return null;
+
+		return str.trim();
+	}
+
+	public static String toHan(byte[] bsrc, int idx, int len)
+	{
+		try
+		{
+			return new String(bsrc, idx, len ,"ksc5601");
+		}catch(java.io.UnsupportedEncodingException ue){}
+
+		return null;
+	}
+	
+	
+	public static String toHanE(byte[] bsrc)
 	{
 		try
 		{
 			String buf = new String(bsrc, "ksc5601");
-			byte[] buf_enc = buf.getBytes(encoding_type);
+			byte[] buf_enc = buf.getBytes("ksc5601");
 			
-			return new String(bsrc, encoding_type);
+			return new String(bsrc, "ksc5601");
 			
 		}catch(java.io.UnsupportedEncodingException ue){}
 
 		return null;
 	}
 	
-
-	static String toHanE(byte[] bsrc, int idx, int len, String encoding_type)
-	{
-		try
-		{
-			String buf = new String(bsrc, idx, len, "ksc5601");
-			byte[] buf_enc = buf.getBytes(encoding_type);
-			
-			return new String(bsrc, encoding_type);
-			
-		}catch(java.io.UnsupportedEncodingException ue){}
-
-		return null;
-	}
-
 	public static String[] split(String srcStr, char c1)
 	{
 		return split(srcStr, String.valueOf(c1));
@@ -152,7 +157,7 @@ public class SUtil
 	
 
 
-	static byte[] ConvB2B(byte[] bsrc, int idx, int len, String src_encoding, String tgt_encoding)
+	public static byte[] ConvB2B(byte[] bsrc, int idx, int len, String src_encoding, String tgt_encoding)
 	{
 		try
 		{
@@ -164,7 +169,7 @@ public class SUtil
 		return null;
 	}
 
-	static String ConvB2S(byte[] bsrc, int idx, int len, String src_encoding)
+	public static String ConvB2S(byte[] bsrc, int idx, int len, String src_encoding)
 	{
 		try
 		{
@@ -176,7 +181,7 @@ public class SUtil
 		return null;
 	}
 
-	static byte[] ConvS2B(String src, int tgt_len, String tgt_encoding)
+	public static byte[] ConvS2B(String src, int tgt_len, String tgt_encoding)
 	{
 		try
 		{
@@ -200,25 +205,8 @@ public class SUtil
 		return null;
 	}
 
-	//인터넷망
-	static String toHanX(byte[] bsrc, int idx, int len)
-	{
-		String str = toHan(bsrc, idx, len);
-		if (str == null) return null;
 
-		return str.trim();
-	}
-
-	static String toHan(byte[] bsrc, int idx, int len)
-	{
-		try
-		{
-			return new String(bsrc, idx, len ,"ksc5601");
-		}catch(java.io.UnsupportedEncodingException ue){}
-
-		return null;
-	}
-
+	//egate_pay
 	public static String GetSvcCode(byte[] msg)
 	{
 		return "6000";  //WON
@@ -228,4 +216,104 @@ public class SUtil
 	    return "PAY";  //WON
 	}
 
+	//KSBankMsg
+	public static String fmt(String str, int len, char ctype)
+	{
+		return format(str,len,ctype);
+	}
+
+	public static String fmt(int no, int len, char ctype)
+	{
+		return format(String.valueOf(no),len,ctype);
+	}
+	
+	//ksdebit_gate
+	
+    static char HALF_CHARS[]    = null;
+    static char FULL_CHARS[]    = null;
+    static
+    {
+        char S_HALF_CHAR = '!'  ,E_HALF_CHAR = '~';
+        char S_FULL_CHAR = '！' ,E_FULL_CHAR = '～';
+
+        HALF_CHARS = new char[E_HALF_CHAR - S_HALF_CHAR + 1];
+        FULL_CHARS = new char[HALF_CHARS.length];
+
+        for(int i=0; i<HALF_CHARS.length; i++)
+        {
+            HALF_CHARS[i] = (char)(S_HALF_CHAR + i);
+            FULL_CHARS[i] = (char)(S_FULL_CHAR + i);
+        }
+    }
+    // MS워드같은 프로그램이 자동으로 바꿔버리는 도형문자 및 유사문자
+	static char		SYMB_CHARS[]	= {'　' ,'“'  ,'”'  ,'’' ,'‘' ,'㈜'   ,'…'	};
+	static String	HALF_CSTRS[]	= {" "  ,"\"" ,"\"" ,"'" ,"`" ,"(주)" ,"..."};
+
+    // 전각문자를 반각문자로 변경한다.
+    public static String full2half(String str)
+    {
+        if (str == null) return "";
+
+        char[] carr = str.toCharArray();
+        StringBuffer sb = new StringBuffer();
+        OUTER: for(int i=0; i<carr.length; i++)
+        {
+            INNER1: for(int j=0; j<HALF_CHARS.length; j++)
+            {
+                if (carr[i] == FULL_CHARS[j])
+                {
+                    sb.append(HALF_CHARS[j]); continue OUTER;
+                }
+            }
+            INNER2: for(int j=0; j<SYMB_CHARS.length; j++)
+            {
+                if (carr[i] == SYMB_CHARS[j])
+                {
+                    sb.append(HALF_CSTRS[j]); continue OUTER;
+                }
+            }
+            sb.append(carr[i]);
+        }
+
+        return sb.toString();
+    }
+    
+	public static String hex_encode(byte[] sbuf)
+	{
+		if (null == sbuf) return null;
+		
+		return hex_encode(sbuf,0,sbuf.length);
+	}
+
+	public static String hex_encode(byte[] sbuf, int sidx ,int len)
+	{
+		if (null == sbuf) return null;
+		
+		int tidx = sidx + len;
+		if (tidx > sbuf.length) tidx = sbuf.length;
+			
+		StringBuffer sb = new StringBuffer();
+		for(int i=sidx; i<tidx; i++)
+		{
+			sb.append(Integer.toHexString((0xFF & sbuf[i]) | 0x0100).substring(1));
+		}
+		
+		return sb.toString();
+	}
+
+	public static byte[] hex_decode(String sStr)
+	{
+	 	int slen = 0;
+	 	if (null == sStr || 0 != ((slen = sStr.length()) & 0x01)) return null;
+
+	 	byte[] oData = new byte[slen / 2];
+
+	 	for (int i=0,j=0; i < slen - 1; i += 2, j++)
+	 	{
+	 		oData[j] = (byte) (0xff & Integer.parseInt(sStr.substring(i, i + 2), 16));
+	 	}
+
+	 	return oData;
+	}	
+	
 }

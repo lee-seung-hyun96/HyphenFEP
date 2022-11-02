@@ -45,55 +45,7 @@ public class KSBankMsg
 		return str;
 	}
 	    
-	public static String fmt(String str, int len, char ctype)
-	{
-		return format(str,len,ctype);
-	}
 
-	public static String fmt(int no, int len, char ctype)
-	{
-		return format(String.valueOf(no),len,ctype);
-	}
 	
-	public static String format(String str, int len, char ctype)
-	{
-        byte[] buff;
-        int filllen = 0;
 
-        String			trim_str = null;
-        StringBuffer	sb = new StringBuffer();
-        
-        buff = (str == null) ? new byte[0] : s2b(str);
-        
-        filllen = len - buff.length;
-        if (filllen < 0)
-        {
-			for(int i=0, j=0; j<len-4; i++)//적당히 여유를 두고 잘라버리자
-			{
-				j += (str.charAt(i) > 127) ? 2 : 1;
-				sb.append(str.charAt(i));
-			}
-
-			trim_str = sb.toString();
-			buff = s2b(trim_str);
-			filllen = len - buff.length;
-			
-			if (filllen <= 0) return new String(buff, 0, len);//여기는 절대로 안타겠지...
-			sb.setLength(0);
-        }else
-        {
-        	trim_str = str;
-        }
-        
-        if(ctype == '9')	// 숫자열인 경우
-        {
-            for(int i = 0; i<filllen;i++) sb.append('0');            
-            sb.append(trim_str);
-        }else				// 문자열인 경우
-        {
-            for(int i = 0; i<filllen;i++) sb.append(' ');
-            sb.insert(0, trim_str);
-        }
-        return sb.toString();
-    }
 }

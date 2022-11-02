@@ -1,0 +1,114 @@
+package ksnet.fpeg;
+
+import java.io.*;
+import java.util.*;
+
+public class LUtil
+{
+    static final String LOG_HOME_CONFIG  = "fpeg.log.home";
+    static final String LOG_LEVEL_CONFIG = "fpeg.log.level";
+
+    static String   SS_LOG_DIR      = null;
+    static int      SI_LOG_LEVEL    = 0;
+    public static final int LV_ALL          = 0;// all   : 모든 정보를 디버그하는데 로그
+    public static final int LV_DEBUG        = 1;// debug : 개발단계에서만 사용하는 로그
+    public static final int LV_CHECK        = 2;// check : 일상적인 수준에서 사용하는 로그
+    public static final int LV_WARN         = 3;// warn  : 일반적으로 발생할 수 있는 예외상황에 대한 로그
+    public static final int LV_ERROR        = 4;// error : 발생해서는 안되는 크리티컬한 수준의 예외에 대한 로그
+
+    public static void eprintln(Object pstr)
+    {
+        aprintln(0, "err", pstr);
+    }
+
+    public static void dprintln(Object pstr)
+    {
+        aprintln(LV_DEBUG, "out", pstr);
+    }
+
+    public static void oprintln(Object pstr)
+    {
+        aprintln(0, "out", pstr);
+    }
+
+    public static void println(Object pstr)
+    {
+        aprintln(0, "out", pstr);
+    }
+
+    public static void eprintln(int log_level, Object pstr)
+    {
+        aprintln(log_level, "err", pstr);
+    }
+
+    public static void oprintln(int log_level, Object pstr)
+    {
+        aprintln(log_level, "out", pstr);
+    }
+
+    public static void aprintln(int log_level, String suffix, Object pstr)
+    {
+        File log_dir = null;
+
+        if (SS_LOG_DIR == null)
+        {
+            SI_LOG_LEVEL    = Integer.parseInt(CUtil.get(LOG_LEVEL_CONFIG));
+            SS_LOG_DIR      = CUtil.get(LOG_HOME_CONFIG);
+            if (!new File(SS_LOG_DIR).exists())
+            {
+                System.out.println("로그디렉토리("+LOG_HOME_CONFIG+") 설정오류!!");
+                return;
+            }
+        }
+
+        if (CUtil.isNew()) SI_LOG_LEVEL = Integer.parseInt(CUtil.get(LOG_LEVEL_CONFIG));
+
+        log_dir = new File(SS_LOG_DIR);
+
+        if (!log_dir.exists()) log_dir.mkdir();
+
+        //if (log_level > SI_LOG_LEVEL) return;
+
+        String sub_name = (suffix == null) ? "out" : suffix;
+
+        String curr_date = DUtil.getCurrDate();
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append(curr_date.substring(0,8)).append('_');
+        sb.append(sub_name).append(".log");
+
+        File openFile = new File(log_dir, sb.toString());
+        PrintStream out = null;
+
+        try{
+            if(openFile.exists()){
+                out = new PrintStream(new FileOutputStream(openFile, true), true);
+            }else{
+                out = new PrintStream(new FileOutputStream(openFile), true);
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
+        if (pstr instanceof Throwable)
+        {
+            Throwable tw = (Throwable)pstr;
+            tw.printStackTrace(out);
+            out.println();
+        }else
+        {
+            sb.setLength(0);
+
+            sb.append("[");
+            sb.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
+            sb.append("]" );
+            sb.append(pstr);
+
+            out.println(sb.toString());
+        }
+        try {if(out!=null){out.close();}}catch(Exception e){}finally{out= null;}
+    }
+}
