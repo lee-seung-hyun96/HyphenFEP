@@ -27,10 +27,11 @@ public class SUtil
 		try
 		{
 			String str = new String(bsrc, "ksc5601");
+	if (str == null) return null;
 	
 			return format(str, len, 'X');
 		}catch(java.io.UnsupportedEncodingException ue){}
-		return null;
+
 	}
 	
 	//°¡»ó°èÁÂ

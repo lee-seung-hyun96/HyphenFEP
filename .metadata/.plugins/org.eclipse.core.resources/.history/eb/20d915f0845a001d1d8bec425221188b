@@ -21,17 +21,24 @@ public class SUtil
 	}
 
 	//추후 수정 예정
-
 	static String toHanD(byte[] bsrc, int idx, int len)
 	{
-		try
-		{
-			String str = new String(bsrc, "ksc5601");
-	
-			return format(str, len, 'X');
-		}catch(java.io.UnsupportedEncodingException ue){}
-		return null;
+		String str = toHan(bsrc, idx, len);
+		if (str == null) return null;
+
+		return str;
 	}
+
+//	static String toHan(byte[] bsrc, int idx, int len)
+//	{
+//		try
+//		{
+//			String str = new String(bsrc, "ksc5601");
+//			return format(str, len, 'X');
+//		}catch(java.io.UnsupportedEncodingException ue){}
+//
+//		return null;
+//	}
 	
 	//가상계좌
 	public static String toHanX(byte[] bsrc, int idx, int len)
