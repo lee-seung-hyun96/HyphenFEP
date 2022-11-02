@@ -5,6 +5,8 @@ hyphen FB dev unit
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fpeterhyun1234)](https://hits.seeyoufarm.com) 
 
 ### HYPHEN 금융개발 UNIT 원격 저장소
+#### 1. 모듈 통합
+#### 2. 배포 및 설치 방안 구상
 
 <!--
 **lee-seung-hyun96/lee-seung-hyun96** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
