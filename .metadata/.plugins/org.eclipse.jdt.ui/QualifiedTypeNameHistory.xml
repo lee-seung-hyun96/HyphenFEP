@@ -3,4 +3,5 @@
     <fullyQualifiedTypeName name="Util.CUtil"/>
     <fullyQualifiedTypeName name="Util.SUtil"/>
     <fullyQualifiedTypeName name="Util.LUtil"/>
+    <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 </qualifiedTypeNameHistroy>
