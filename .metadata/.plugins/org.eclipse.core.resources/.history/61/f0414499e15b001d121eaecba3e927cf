@@ -1,0 +1,11 @@
+package Firm_Bypass;
+
+import java.text.SimpleDateFormat;
+
+public class TestData {
+	
+	
+	String RequestDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
+
+final static String firmTest =  "         KONEPS01  08008001900002"+ RequestDate + "                                     089                                                                                                                                                                                                                     ";
+}

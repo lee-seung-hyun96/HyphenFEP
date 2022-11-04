@@ -1,0 +1,24 @@
+package Crypto;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.spec.*;
+import java.security.interfaces.RSAPublicKey;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+
+
+public class KSBankMsg
+{
+
+
+	public static String b2s(byte[] buf)
+	{
+		return (null == buf) ? null : b2s(buf,0,buf.length);
+	}
+
+	
+
+}

@@ -198,15 +198,23 @@ public class SUtil
 		return null;
 	}
 
-
-	//egate_pay
 	public static String GetSvcCode(byte[] msg)
 	{
-		return "6000";  //WON
+		if(msg.length == 2000) return "2000";   //KEB
+		else if (SUtil.toHan(msg, 0, 9).equals("KSNETVR  ")) return "4000"; //VR
+		else if (SUtil.toHan(msg, 9, 3).equals("FCS") && SUtil.toHan(msg, 19, 7).equals("0600400") ) return "5000"; // FCS
+		else if (SUtil.toHan(msg, 0, 9).equals("KSFC     ")|| SUtil.toHan(msg, 17, 4).equals("    ")) return "3000"; //SDS EBOND
+		else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "6000"; //KSBPAY, KSDEBIT
+		else    return "1000";  //WON
 	}
 	public static String GetSvcName(byte[] msg)
 	{
-	    return "PAY";  //WON
+		if(msg.length == 2000) return "KEB";   //KEB
+		else if (SUtil.toHan(msg, 0, 9).equals("KSNETVR  ")) return "VAC"; //VR
+		else if (SUtil.toHan(msg, 9, 3).equals("FCS") && SUtil.toHan(msg, 19, 7).equals("0600400") ) return "FCS"; // FCS
+		else if (SUtil.toHan(msg, 0, 9).equals("KSFC     ")|| SUtil.toHan(msg, 17, 4).equals("    ")) return "EBD"; //SDS EBOND
+    else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "PAY"; //KSBPAY,KSDEBIT
+		else    return "WON";  //WON
 	}
 
 	//KSBankMsg
@@ -218,6 +226,39 @@ public class SUtil
 	public static String fmt(int no, int len, char ctype)
 	{
 		return format(String.valueOf(no),len,ctype);
+	}
+	
+	public static byte[] s2b(String str)
+	{
+		byte[] buf = null;
+		try
+		{
+			buf = str.getBytes("ksc5601");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return buf;
+	}
+	
+	public static String b2s(byte[] buf)
+	{
+		return (null == buf) ? null : b2s(buf,0,buf.length);
+	}
+
+	public static String b2s(byte[] buf, int bidx, int blen)
+	{
+		String str = null;
+		try
+		{
+			str = new String(buf,bidx,blen,"ksc5601");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return str;
 	}
 	
 	//ksdebit_gate

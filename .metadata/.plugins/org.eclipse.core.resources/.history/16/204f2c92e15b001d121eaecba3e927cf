@@ -1,0 +1,5 @@
+package Firm_Bypass;
+
+public class TestData {
+final static String firmTest =  "         KONEPS01  08008001900002"+ RequestDate + "                                     089                                                                                                                                                                                                                     ";
+}
