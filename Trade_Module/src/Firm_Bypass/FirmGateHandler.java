@@ -3,12 +3,9 @@ package Firm_Bypass;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
-import Crypto.KSBankEncSocket;
+import Crypto.HyphenEncSocket;
 
-import java.text.SimpleDateFormat;
-import java.sql.*;
 import Util.*;
 
 public class FirmGateHandler extends Thread
@@ -39,7 +36,7 @@ public class FirmGateHandler extends Thread
 			int sock_timeout = Integer.parseInt(CUtil.get("SND_TIMEOUT"));
 
 			socket = new Socket();
-			socket = KSBankEncSocket.connect_socket(ksnet_ip, ksnet_port);
+			socket = HyphenEncSocket.connect_socket(ksnet_ip, ksnet_port);
 
 			if(socket == null) {
 				LUtil.println("CLIENT->KSNET=[Socket Connect Error]");
@@ -51,20 +48,20 @@ public class FirmGateHandler extends Thread
 
 			byte[] sbuf = SUtil.ConvS2B(send_msg, msg_len, "ksc5601");
 			//wbs_egate encrypt
-			byte[] k_buf = KSBankEncSocket.GenerateKey();
+			byte[] k_buf = HyphenEncSocket.GenerateKey();
 			String svc_code = SUtil.GetSvcCode(SUtil.s2b(send_msg));
 
 			String auth_key = CUtil.get("AUTH_KEY");
 			byte[] snd_buf = SUtil.s2b(svc_code+auth_key+send_msg);
 
-			byte[] e_sbuf = KSBankEncSocket.kscms_encrypt(k_buf, snd_buf);
+			byte[] e_sbuf = HyphenEncSocket.cms_encrypt(k_buf, snd_buf);
 
 
-			KSBankEncSocket.snd_socket(socket, e_sbuf);
+			HyphenEncSocket.snd_socket(socket, e_sbuf);
 			byte[] e_rbuf = null;
 			try{
 				LUtil.println("CLIENT->KSNET=[" + send_msg + "][L:"+send_msg.length()+"]");
-				e_rbuf = KSBankEncSocket.rcv_socket_len(socket, sock_timeout);
+				e_rbuf = HyphenEncSocket.rcv_socket_len(socket, sock_timeout);
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -75,7 +72,7 @@ public class FirmGateHandler extends Thread
 				return;
 			}
 
-			byte[] rpy_buf = KSBankEncSocket.kscms_decrypt(k_buf, e_rbuf);
+			byte[] rpy_buf = HyphenEncSocket.cms_decrypt(k_buf, e_rbuf);
 
 			if (rpy_buf == null) 
 			{
@@ -83,7 +80,7 @@ public class FirmGateHandler extends Thread
 				return;
 			}
 
-			if (KSBankEncSocket.snd_socket(socket, rpy_buf))
+			if (HyphenEncSocket.snd_socket(socket, rpy_buf))
 			{
 				LUtil.println("KSNET->CLIENT=[" + recv_msg + "][L:"+rpy_buf.length+"]");
 			}			
@@ -118,75 +115,6 @@ public class FirmGateHandler extends Thread
 			try{if (serv_in != null) serv_in.close();}catch(Exception e){};
 			try{if (serv_out != null) serv_out.close();}catch(Exception e){};
 			try{if (socket != null) socket.close();}catch(Exception e){};
-		}
-	}
-}
-
-
-
-
-class LogDeleteTimer extends Thread
-{
-	public void run()
-	{
-		try {
-			while(true)
-			{
-				deleteLogFile();
-				Thread.sleep(1000*60);
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	static String SS_LOG_HOME  = null;
-	static int    SI_LOG_SAVE_DAY = 0;
-
-	private void deleteLogFile()
-	{
-		String fnm = "deleteLogFile";
-
-		long cmillis = System.currentTimeMillis();
-
-		if (null == SS_LOG_HOME)
-		{
-
-			SS_LOG_HOME = CUtil.get("LOG_PATH");
-			SI_LOG_SAVE_DAY = Integer.parseInt(CUtil.get("LOG_SAVE_DAYS"));
-
-
-			if (null == SS_LOG_HOME)
-			{
-				LUtil.println(fnm + " ERROR : LOG_DIR_PATH!!");
-				return;
-			}
-		}
-
-		File dir = new File(SS_LOG_HOME);
-		if (dir == null || !dir.isDirectory())
-		{
-			LUtil.println(fnm + " ERROR : LOG_DIR_PATH!!");
-			return;
-		}
-
-		deleteOldFiles(dir, (cmillis-(86400000L*SI_LOG_SAVE_DAY)), true, false);
-	}
-
-	private void deleteOldFiles(File dir, long lastModified, boolean deleteSub, boolean deleteSubDir)
-	{
-		File[] fs = dir.listFiles();
-		for(int i=0; i<fs.length; i++)
-		{
-			if (deleteSub && fs[i].isDirectory()) deleteOldFiles(fs[i], lastModified, true, deleteSubDir);
-			if (fs[i].lastModified() < lastModified)
-			{
-				if (!fs[i].isDirectory() || deleteSubDir)
-				{
-					boolean rtn = fs[i].delete();
-					//LUtil.println("====deleteOldFiles==== [" + rtn + ":"+fs[i].getName()+"]!!");;
-				}
-			}
 		}
 	}
 }

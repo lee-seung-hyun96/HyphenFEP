@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.nio.*;
-import java.nio.channels.*;
 import java.math.BigInteger;
 import java.security.*;
 import javax.crypto.*;
@@ -19,58 +18,9 @@ public class DebitBinHandler extends Thread
 	public static final byte C_ETX = 0x03;
 	public static final int READ_BLOCK_SIZE = 2000;
 	public static final int READ_TIMEOUT = 40;
-
-	public DebitBinHandler(String send_info[]) throws Exception {
-		String path = System.getProperty("user.dir");
-		path = path + "\\conf\\ks_gate.cfg";
-		String[] argsTest = new String[1];
-		argsTest[0] = path;
-		svc_start(argsTest);
+	private String msg_info[] = new String[10];
+	private InputStream bin_in = null;
 	
-	}
-	
-
-	static boolean GO_FLAG = true;
-
-	public static void svc_start(String[] args) throws Exception
-	{
-		CUtil.setConfig("C:\\stKim\\Transaction_v1.0\\Trade_Module\\conf\\config.ini");
-		System.out.println("Start~~");
-		String listenPort	= CUtil.get("KSNET_PORT");
-		if (listenPort == null) throw new IllegalArgumentException("("+args[0]+")에 fpeg.svr.port 설정오류!!");
-
-        int port = Integer.parseInt(listenPort);
-
-        new KSFPETimer().start();
-
-		ServerSocket	ss = new ServerSocket(port);
-
-		LUtil.println("프로세스기동~~");
-
-		
-		
-		String curr_date_14 = DUtil.getCurrDate();
-		int midx = 1000000000 + Integer.parseInt(curr_date_14.substring(6)+"0");
-
-        LUtil.println("CHECK:("+midx+") starting...");
-        
-        int wcnt = 0;
-        while(GO_FLAG)
-        {
-			Socket	cs = ss.accept();	
-
-        	new DebitBinHandler(cs,midx).start();
-        }
-        LUtil.println("CHECK:("+midx+") ended...");
-	}
-
-	public static void svc_stop(String [] args)
-	{
-        GO_FLAG = false;
-        LUtil.println("CHECK: stop called...");
-	}
-
-
 	MetaEn			hmsg;
 	ByteBuffer      buff;
 	Well512         ro;
@@ -80,24 +30,29 @@ public class DebitBinHandler extends Thread
 
 	Socket cs = null;
 	Socket s_cs = null;
-
-	public DebitBinHandler(Socket cs, int midx)
-	{
-		this.cs = cs;
-                          
+	
+	
+	public DebitBinHandler(String send_info[]) throws Exception {
 		this.hmsg         	= new MetaEn();
 		this.ro           	= new Well512();
-		this.cmsg 			= new MsgEn();
 		this.cmsg 			= new MsgEn();
 		this.smsg 			= new MsgEn();
 		this.cmsg.ctype = 'C';
 		this.smsg.ctype = 'S';
+		
+		System.arraycopy(send_info, 0, this.msg_info, 0, send_info.length);
+		
+		if ((send_info[2].equals("PRW") || send_info[2].equals("PRD")) && send_info[7].equals("0600601")) {
+			CopyInputStream cis = new CopyInputStream(DUtil.bin_in);
+			this.bin_in = cis.getCopy();
+		}
+	
 	}
-
+	
 	public void run()
 	{
 		DataInputStream			in			= null;
-		String fileName = CUtil.get("fpeg.saf.home")+"/"+UUID.randomUUID().toString();
+		String fileName = CUtil.get("SAF_PATH")+"/"+UUID.randomUUID().toString();
 
     System.out.println("saf : "+fileName);
 		try
@@ -105,14 +60,6 @@ public class DebitBinHandler extends Thread
 			hmsg.route_type    = "00".getBytes()    ;
 			hmsg.enc_type      = "$".getBytes()     ;
 			hmsg.m_key_type    = "0".getBytes()     ;
-
-			in = new DataInputStream(cs.getInputStream());
-
-			if (!storeMsg(fileName, in))
-			{
-				LUtil.println("ERROR : storeMsg()");
-				return;
-			}
 
 			processClientMsg(fileName);
 			processServerMsg();
@@ -820,87 +767,6 @@ public class DebitBinHandler extends Thread
 
 }
 
-class KSFPETimer extends Thread
-{
-	public void run()
-	{
-		try {
-			deleteLog();
-
-			Thread.sleep(10000);//10초에 한번씩 일하자...
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	static String SS_LOG_HOME		= null;
-	static String SS_SAF_HOME		= null;
-	static long   SL_LOG_DEL_MILLIS	= 0;
-	private void deleteLog()
-	{
-		String fnm = "deleteLog";
-
-		long cmillis = System.currentTimeMillis();
-
-		if ((cmillis - SL_LOG_DEL_MILLIS) < 86400000L) return;
-
-		if (null == SS_LOG_HOME ||  null == SS_SAF_HOME)
-		{
-			SS_LOG_HOME = CUtil.get("fpeg.log.home");
-			SS_SAF_HOME = CUtil.get("fpeg.saf.home");
-
-			if (null == SS_LOG_HOME)
-			{
-				LUtil.println(fnm + " ERROR : 로그경로(fpeg.log.home)설정오류(1)!!");
-				LUtil.println(fnm + " ERROR : 로그경로(fpeg.log.home)설정오류(1)!!");
-				return;
-			}
-			else if (null == SS_SAF_HOME)
-			{
-				LUtil.println(fnm + " ERROR : 로그경로(fpeg.saf.home)설정오류(1)!!");
-				LUtil.println(fnm + " ERROR : 로그경로(fpeg.saf.home)설정오류(1)!!");
-				return;
-			}
-		}
-
-		File dir = new File(SS_LOG_HOME);
-		File saf_dir = new File(SS_SAF_HOME);
-		if (dir == null || !dir.isDirectory())
-		{
-			LUtil.println(fnm + " ERROR : 로그경로(fpeg.log.home)설정오류("+SS_LOG_HOME+")!!");
-			LUtil.println(fnm + " ERROR : 로그경로(fpeg.log.home)설정오류("+SS_LOG_HOME+")!!");
-			return;
-		}
-		else if (saf_dir == null || !saf_dir.isDirectory())
-		{
-			LUtil.println(fnm + " ERROR : 로그경로(fpeg.saf.home)설정오류("+SS_SAF_HOME+")!!");
-			LUtil.println(fnm + " ERROR : 로그경로(fpeg.saf.home)설정오류("+SS_SAF_HOME+")!!");
-			return;
-		}
-		String xdays = CUtil.get("fpeg.log.xdays");
-
-		deleteOldFiles(dir, (cmillis-Long.parseLong(xdays)*86400000L), true, false);
-		deleteOldFiles(saf_dir, (cmillis-86400000L), true, false);
-	}
-
-	private void deleteOldFiles(File dir, long lastModified, boolean deleteSub, boolean deleteSubDir)
-	{
-		File[] fs = dir.listFiles();
-		for(int i=0; i<fs.length; i++)
-		{
-			if (deleteSub && fs[i].isDirectory()) deleteOldFiles(fs[i], lastModified, true, deleteSubDir);
-
-			if (fs[i].lastModified() < lastModified)
-			{
-				if (!fs[i].isDirectory() || deleteSubDir)
-				{
-				    boolean rtn = fs[i].delete();
-LUtil.println("====deleteOldFiles==== [" + rtn + ":"+fs[i].getName()+"]!!");;
-				}
-			}
-		}
-	}
-
-}
 
 class MetaEn
 {

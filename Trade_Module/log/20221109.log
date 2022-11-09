@@ -1,0 +1,79 @@
+[09:26:52]START[2]
+[09:26:58]deleteLog ERROR : 로그경로(fpeg.log.home)설정오류(1)!!
+[09:26:58]프로세스기동~~
+[09:26:58]deleteLog ERROR : 로그경로(fpeg.log.home)설정오류(1)!!
+[09:26:58]CHECK:(1090926580) starting...
+[10:26:56]START[2]
+[10:26:56]deleteLogFile ERROR : null
+[10:26:56]CHECK:(1091026560) starting...
+[10:41:23]START[2]
+[10:41:23]CHECK:(1091041230) starting...
+[10:42:28]START[2]
+[10:42:38]START[2]
+[10:43:16]CHECK:(1091043140) starting...
+[10:44:38]START[2]
+[11:54:40]START[2]
+[11:54:46]CLIENT->KSNET=[         KONEPS01  0100100190000120221109115445                                     089             70110000010023               0000000000100                1002000058033           115445KSC5601                                                                020                                      ][L:300]
+[12:00:17]START[2]
+[12:00:24]CLIENT->KSNET=[         KONEPS01  0100100190000120221109120023                                     089             70110000010023               0000000000100                1002000058033           120023KSC5601                                                                020                                     ][L:299]
+[12:12:24]START[2]
+[12:12:29]CLIENT->KSNET=[         KONEPS01  0100100190000120221109121228                                     089             70110000010023               0000000000100                1002000058033           121228KSC5601                                                                020                                      ][L:300]
+[12:13:09]START[2]
+[12:13:27]CLIENT->KSNET=[         KONEPS01  0100100190000120221109121311                                     089             70110000010023               0000000000100                1002000058033           121311KSC5601                                                                020                                      ][L:300]
+[12:13:37]START[2]
+[12:13:52]CLIENT->KSNET=[         KONEPS01  0100100190000120221109121340                                     089             70110000010023               0000000000100                1002000058033           121340KSC5601                                                                020                                      ][L:300]
+[12:14:03]START[2]
+[12:14:48]CLIENT->KSNET=[         KONEPS01  0100100190000120221109121405                                     089             70110000010023               0000000000100                1002000058033           121405KSC5601                                                                020                                      ][L:300]
+[12:15:06]START[2]
+[12:15:12]CLIENT->KSNET=[         KONEPS01  0100100190000120221109121511                                     089             70110000010023               0000000000100                1002000058033           121511KSC5601                                                                020                                      ][L:300]
+[12:57:19]START[2]
+[12:58:06]START[2]
+[13:04:28]START[2]
+[13:04:44]START[2]
+[13:04:47]CLIENT->KSNET=[KSBPAY   KONEPS01  0100100190000120221109130446                                     089             70110000010023               0000000000100                1002000058033           130446KSC5601                                                                020                                      ][L:300]
+[13:04:47]KSNET->CLIENT=[null][L:300]
+[13:13:16]START[2]
+[13:13:19]deleteLogFile ERROR : null
+[13:13:19]CHECK:(1091313190) starting...
+[13:24:30]START[2]
+[13:24:41]Cannot invoke "java.net.Socket.getInputStream()" because "this.cs" is null
+[13:27:39]START[2]
+[13:28:07]Cannot invoke "java.net.Socket.getInputStream()" because "this.cs" is null
+[13:28:31]START[2]
+[13:28:34]Cannot invoke "java.net.Socket.getInputStream()" because "this.cs" is null
+[13:28:49]START[2]
+[13:29:08]Cannot invoke "java.net.Socket.getInputStream()" because "this.cs" is null
+[13:30:17]START[2]
+[13:30:25]START[2]
+[13:30:39]Cannot invoke "String.trim()" because "in" is null
+[13:30:44]START[2]
+[13:31:01]START[2]
+[13:31:58]START[2]
+[13:36:47]START[2]
+[14:32:49]START[2]
+[14:32:49]Cannot invoke "java.net.Socket.getInputStream()" because "this.s_cs" is null
+[14:33:13]START[2]
+[14:35:09]Cannot invoke "java.net.Socket.getInputStream()" because "this.s_cs" is null
+[14:35:46]Cannot invoke "java.net.Socket.getInputStream()" because "this.s_cs" is null
+[15:03:08]START[2]
+[15:04:43]START[2]
+[15:04:57]START[2]
+[15:05:30]START[2]
+java.sql.SQLException: Column Index out of range, 8 > 7. 
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:1055)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:956)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:926)
+	at com.mysql.jdbc.ResultSetImpl.checkColumnBounds(ResultSetImpl.java:792)
+	at com.mysql.jdbc.ResultSetImpl.getBinaryStream(ResultSetImpl.java:1481)
+	at Util.DUtil.Select_SendData(DUtil.java:138)
+	at Firm_Bypass.FirmBypass.main(FirmBypass.java:37)
+
+[15:12:19]START[2]
+[15:13:06]START[2]
+[15:23:32]START[2]
+[15:23:38]START[2]
+[15:24:22]START[2]
+[15:24:38]START[2]
+[15:24:48]START[2]
+[15:25:15]START[2]
+[15:26:17]START[2]

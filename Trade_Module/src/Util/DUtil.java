@@ -1,23 +1,19 @@
 package Util;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
 
 
 public class DUtil
 {
+	public static InputStream bin_in = null;
 	static String DRIVER_NAME   = null;
 	static String DB_URL        = null;
 	static String USER_NAME     = "";
@@ -107,7 +103,7 @@ public class DUtil
 		TABLE_NAME          = CUtil.get("JDBC_TABLENAME");
 
 		/* db select */
-		String QRY = "SELECT REQ_DATE, SVC_TYPE, BANK_CODE, COMP_CODE, SEQ_NO, MSG_CODE, SEND_MSG FROM " + TABLE_NAME + " WHERE REQ_DATE = ? AND SEND_FLAG = 'N' ORDER BY REQ_DATE, REQ_TIME";
+		String QRY = "SELECT REQ_DATE, SVC_TYPE, BANK_CODE, COMP_CODE, SEQ_NO, MSG_CODE, SEND_MSG, BIN_DATA  FROM " + TABLE_NAME + " WHERE REQ_DATE = ? AND SEND_FLAG = 'N' ORDER BY REQ_DATE, REQ_TIME";
 
 		try {
 			con = getConnection();
@@ -131,6 +127,14 @@ public class DUtil
 				send_info[7] = rs.getString(6);     /* msg_code */
 				send_info[8] = rs.getString(7);     /* send_msg */
 
+				/* binary include msg_len */
+				if ((send_info[2].equals("PRW") || send_info[2].equals("PRD")) && send_info[7].equals("0600601")) {
+					InputStream rs_in = rs.getBinaryStream(8); /* binary data */
+					CopyInputStream cis = new CopyInputStream(rs_in);
+					bin_in = cis.getCopy();
+					rs_in.close();
+				}
+				
 				if (cnt >= 1) break;  
 			}
 
@@ -445,7 +449,6 @@ public class DUtil
 		return false;
 	}
 	
-	static final String HOLIDAY_FILE_CONFIG = "fpeg.holiday.file";
 
 	public static String getCurrDate()
 	{
@@ -497,220 +500,6 @@ public class DUtil
 		cal.add(Calendar.DATE,cday);
 
 		return getDate(cal);
-	}
-
-	static Hashtable hht = new Hashtable();
-	public static boolean isHoliday(Calendar cal)
-	{
-		int dtype = cal.get(Calendar.DAY_OF_WEEK);
-		if (dtype == Calendar.SUNDAY || dtype == Calendar.SATURDAY) return true;
-
-		String check_date	= new SimpleDateFormat("yyyyMMdd").format(cal.getTime());
-		String year			= check_date.substring(0,4);
-		if (null == hht.get(HOLIDAY_FILE_CONFIG))
-		{
-			String	fname = CUtil.get(HOLIDAY_FILE_CONFIG);
-			if (fname == null) throw new IllegalArgumentException("DUtil.isHoliday(휴일정보파일:"+HOLIDAY_FILE_CONFIG+") 오류!!");
-			BufferedReader buf = null;
-			try{
-				buf = new BufferedReader(new InputStreamReader(new FileInputStream(fname)));
-
-				String tmpStr = null;
-				while((tmpStr = buf.readLine()) != null)
-				{
-					if (!tmpStr.startsWith(year)) continue;
-					hht.put(tmpStr.substring(0,8),tmpStr.substring(9,10));
-				}
-
-				hht.put(HOLIDAY_FILE_CONFIG,"O");
-			}catch(Exception e)
-			{
-				LUtil.println(e);
-			}finally
-			{
-				try{if (buf != null) buf.close();buf = null;}catch(Exception e){}
-			}
-		}
-
-		String hstate = (String)hht.get(check_date);
-
-		return (null != hstate);
-	}
-
-	public static String[] getFWokDays(Calendar cal)
-	{
-		LinkedList aList = new LinkedList();
-
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-		while(true)
-		{
-			aList.add(df.format(cal.getTime()));
-
-			if (!isHoliday(cal)) break; /* 휴일이 아닌 날 하루가 있으면 그날까지 집계 점검 */;
-			cal.add(Calendar.DATE,-1);
-		}
-
-		int size = aList.size();
-		String[] wdays = new String[size];
-		for(int i=0; i<size; i++)
-		{
-			wdays[size-i-1] = (String)aList.get(i);
-		}
-		return wdays;
-	}
-
-	public static String[] getFWokDays()
-	{
-		Calendar cal = Calendar.getInstance();//Calendar.getInstance(TimeZone.getTimeZone("ZMT+9"),Locale.KOREAN);//Calendar.getInstance();
-
-		int dtype = cal.get(Calendar.DAY_OF_WEEK);
-
-		if (isHoliday(cal)) return new String[0];//휴일에는 작업하지 않는다.
-
-		if (dtype == Calendar.SUNDAY || dtype == Calendar.SATURDAY)
-		{
-			LUtil.println("CHECK : OKSummaryHandler.getFWokDays() : 공휴일에는 수납파일을 생성하지 않습니다.!!");
-
-			return new String[0];
-		}
-		cal.add(Calendar.DATE,-1);
-
-		return getFWokDays(cal) ;
-	}
-
-	public static String[] getFWokDays(String lastDay)
-	{
-		Calendar cal = Calendar.getInstance();//Calendar.getInstance(TimeZone.getTimeZone("ZMT+9"),Locale.KOREAN);//Calendar.getInstance();
-		cal.set(Integer.parseInt(lastDay.substring(0,4)), Integer.parseInt(lastDay.substring(4,6))-1, Integer.parseInt(lastDay.substring(6,8)));
-		return getFWokDays(cal) ;
-	}
-
-	public static String[] getBetweenDate(String p_sdate, String p_edate)
-	{
-		ArrayList aList = new ArrayList();
-		try
-		{
-			String sdate = ((p_sdate == null) ? getCurrDate() : p_sdate);
-			String edate = ((p_edate == null) ? getCurrDate() : p_edate);
-
-			int s_yyyy = Integer.parseInt(sdate.substring(0,4));
-			int s_mm   = Integer.parseInt(sdate.substring(4,6))-1;
-			int s_dd   = Integer.parseInt(sdate.substring(6,8));
-
-			int e_yyyy = Integer.parseInt(edate.substring(0,4));
-			int e_mm   = Integer.parseInt(edate.substring(4,6))-1;
-			int e_dd   = Integer.parseInt(edate.substring(6,8));
-
-			StringBuffer sb = new StringBuffer();
-			for(int i=s_yyyy; i<=e_yyyy; i++)
-			{
-				sb.setLength(0);
-				sb.append(i);
-
-				int t_s_mm = (i==s_yyyy && s_mm>0) ? s_mm : 0;
-				int t_e_mm = (i==e_yyyy && e_mm<11) ? e_mm : 11;
-				for(int j=t_s_mm; j<=t_e_mm; j++)
-				{
-					sb.setLength(4);
-					if (j<9) sb.append('0');
-					sb.append(j+1);
-
-					int t_max_dd = getMaxMday(i, j);
-
-					int t_s_dd = (i==s_yyyy && j==s_mm && s_dd>1       ) ? s_dd : 1;
-					int t_e_dd = (i==e_yyyy && j==e_mm && e_dd<t_max_dd) ? e_dd : t_max_dd;
-					for(int k=t_s_dd; k<=t_e_dd; k++)
-					{
-						sb.setLength(6);
-						if (k<10) sb.append('0');
-						sb.append(k);
-
-						aList.add(sb.toString());
-					}
-				}
-			}
-		}catch(Exception e)
-		{
-			LUtil.println(e);
-		}
-		return (String[])aList.toArray(new String[0]);
-	}
-
-	public static String[] getBetweenMonth(String p_sdate, String p_edate)
-	{
-		ArrayList aList = new ArrayList();
-		try
-		{
-			String sdate = ((p_sdate == null) ? getCurrDate() : p_sdate);
-			String edate = ((p_edate == null) ? getCurrDate() : p_edate);
-
-			int s_yyyy = Integer.parseInt(sdate.substring(0,4));
-			int s_mm   = Integer.parseInt(sdate.substring(4,6))-1;
-
-			int e_yyyy = Integer.parseInt(edate.substring(0,4));
-			int e_mm   = Integer.parseInt(edate.substring(4,6))-1;
-
-			StringBuffer sb = new StringBuffer();
-			for(int i=s_yyyy; i<=e_yyyy; i++)
-			{
-				sb.setLength(0);
-				sb.append(i);
-
-				int t_s_mm = (i==s_yyyy && s_mm>0) ? s_mm : 0;
-				int t_e_mm = (i==e_yyyy && e_mm<11) ? e_mm : 11;
-				for(int j=t_s_mm; j<=t_e_mm; j++)
-				{
-					sb.setLength(4);
-					if (j<9) sb.append('0');
-					sb.append(j+1);
-
-					aList.add(sb.toString());
-				}
-			}
-		}catch(Exception e)
-		{
-			LUtil.println(e);
-		}
-		return (String[])aList.toArray(new String[0]);
-	}
-
-	public static String[] getBetweenYear(String p_sdate, String p_edate)
-	{
-		ArrayList aList = new ArrayList();
-		try
-		{
-			String sdate = ((p_sdate == null) ? getCurrDate() : p_sdate);
-			String edate = ((p_edate == null) ? getCurrDate() : p_edate);
-
-			int s_yyyy = Integer.parseInt(sdate.substring(0,4));
-			int e_yyyy = Integer.parseInt(edate.substring(0,4));
-
-			StringBuffer sb = new StringBuffer();
-			for(int i=s_yyyy; i<=e_yyyy; i++)
-			{
-				sb.setLength(0);
-				sb.append(i);
-
-				aList.add(sb.toString());
-			}
-		}catch(Exception e)
-		{
-			LUtil.println(e);
-		}
-		return (String[])aList.toArray(new String[0]);
-	}
-
-	private static int getMaxMday(int year, int midx)
-	{
-		int[] m_dates={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-		if (midx < 0 || midx > 11) return 0;
-		if (midx != 1) return m_dates[midx];
-
-		if  (year % 400 == 0 || (year % 4 ==0 && year % 100 !=0)) return 29;
-		return 28;
-	}
-	
-	
+	}		
 	
 }

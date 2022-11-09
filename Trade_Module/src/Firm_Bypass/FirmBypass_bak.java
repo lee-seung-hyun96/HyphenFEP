@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 
-import Crypto.KSBankEncSocket;
+import Crypto.*;
 import Util.*;
 
 public class FirmBypass_bak extends Thread{

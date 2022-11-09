@@ -1,15 +1,5 @@
 package Firm_Bypass;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
-
-import Crypto.KSBankEncSocket;
 import Util.*;
 
 public class FirmBypass{
@@ -31,18 +21,21 @@ public class FirmBypass{
 
 		LUtil.println("START[" + CUtil.get("SEND_CNT_PER_SEC") + "]");
 
-		new LogDeleteTimer().start();
+		TimerDeleteLog DeleteLog = new TimerDeleteLog(Integer.parseInt(CUtil.get("LOG_SAVE_DAYS")), CUtil.get("LOG_PATH"));
+		DeleteLog.start();
 			while (true) {
 				String send_info[] = DUtil.Select_SendData();
 
 				if (send_info[0].equals("0000")) {
+					
+					
 					//testcall
-					int testcnt = 1;
+					int testcnt = 2;
 					
 					switch(testcnt) {
 					case firmEGate:
 						//egate
-						new FirmGateHandler(send_info).start();;
+						new FirmGateHandler(send_info).start();
 						
 						break;
 					case firmDebitGate:
