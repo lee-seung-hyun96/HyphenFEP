@@ -204,7 +204,7 @@ public class SUtil
 		else if (SUtil.toHan(msg, 0, 9).equals("KSNETVR  ")) return "4000"; //VR
 		else if (SUtil.toHan(msg, 9, 3).equals("FCS") && SUtil.toHan(msg, 19, 7).equals("0600400") ) return "5000"; // FCS
 		else if (SUtil.toHan(msg, 0, 9).equals("KSFC     ")|| SUtil.toHan(msg, 17, 4).equals("    ")) return "3000"; //SDS EBOND
-		else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "6000"; //KSBPAY, KSDEBIT
+		else if (SUtil.toHan(msg, 0, 9).equals("HYPHEN  ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "6000"; //KSBPAY, KSDEBIT
 		else    return "1000";  //WON
 	}
 	public static String GetSvcName(byte[] msg)

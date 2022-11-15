@@ -19,8 +19,8 @@ public class DebitBinHandler extends Thread
 	public static final int READ_BLOCK_SIZE = 2000;
 	public static final int READ_TIMEOUT = 40;
 	private String msg_info[] = new String[10];
-	private InputStream bin_in = null;
-	
+	private InputStream rs_in = null;
+	DataInputStream			in			= null;
 	MetaEn			hmsg;
 	ByteBuffer      buff;
 	Well512         ro;
@@ -30,47 +30,55 @@ public class DebitBinHandler extends Thread
 
 	Socket cs = null;
 	Socket s_cs = null;
-	
-	
-	public DebitBinHandler(String send_info[]) throws Exception {
+
+
+	public DebitBinHandler(String send_info[], InputStream rs_in) throws Exception {
 		this.hmsg         	= new MetaEn();
 		this.ro           	= new Well512();
 		this.cmsg 			= new MsgEn();
 		this.smsg 			= new MsgEn();
 		this.cmsg.ctype = 'C';
 		this.smsg.ctype = 'S';
-		
+		this.rs_in = rs_in;
 		System.arraycopy(send_info, 0, this.msg_info, 0, send_info.length);
-		
-		if ((send_info[2].equals("PRW") || send_info[2].equals("PRD")) && send_info[7].equals("0600601")) {
-			CopyInputStream cis = new CopyInputStream(DUtil.bin_in);
-			this.bin_in = cis.getCopy();
-		}
-	
+
 	}
 	
+	public DataInputStream msgTodata() throws IOException {
+		String send_msg = this.msg_info[8];
+		String msgLen = String.format("%04d", send_msg.length());
+		send_msg = msgLen + send_msg;
+		InputStream is = new ByteArrayInputStream(send_msg.getBytes());
+		DataInputStream dis = new DataInputStream(is);
+
+		return dis;
+	}
+	
+	byte[] data = null;
 	public void run()
 	{
-		DataInputStream			in			= null;
-		String fileName = CUtil.get("SAF_PATH")+"/"+UUID.randomUUID().toString();
-
-    System.out.println("saf : "+fileName);
+		//		DataInputStream			in			= null;
 		try
 		{
 			hmsg.route_type    = "00".getBytes()    ;
 			hmsg.enc_type      = "$".getBytes()     ;
 			hmsg.m_key_type    = "0".getBytes()     ;
+			DataInputStream bin_in = new DataInputStream(rs_in);
+			DataInputStream msg_in = msgTodata();
 
-			processClientMsg(fileName);
+
+			if ((data = checkMsgLen(msg_in, bin_in)) == null)
+			{
+				LUtil.println("ERROR : storeMsg()");
+				return;
+			}
+			processClientMsg(data);
 			processServerMsg();
 
 		}catch (Exception e) {
 			LUtil.println(e.getMessage());
 		}finally{
 			try{
-				if (in != null) in.close();
-				File del_file = new File(fileName);
-				del_file.delete();
 
 			}catch(Exception e){};
 		}
@@ -91,7 +99,7 @@ public class DebitBinHandler extends Thread
 		return k16;
 	}
 
-	int processClientMsg(String fileName) throws IOException, InterruptedException
+	int processClientMsg(byte[] data) throws IOException, InterruptedException
 	{
 		BufferedInputStream fin;
 		int rtn;
@@ -99,21 +107,19 @@ public class DebitBinHandler extends Thread
 		int read_len;
 		int rest_len;
 
-    /* 전송속도 조절 필요  최소 0.1초 => 0.05초로 수정  */
+		/* 전송속도 조절 필요  최소 0.1초 => 0.05초로 수정  */
 		int sleep_time =(int) (Float.parseFloat(CUtil.get("fpeg.sleep"))*1000);
 		if (sleep_time < 50) sleep_time = 50;
 
-/*
+		/*
 		LUtil.println("DEBUG processClientMsg sleep_time : "+sleep_time);
-*/
-		
+		 */
+
 		try {
 
-			File saf_file  = new File(fileName);
-
-			t_len = (int) saf_file.length();
-
-			fin  = new BufferedInputStream(new FileInputStream(fileName));
+			t_len = (int) data.length;
+			InputStream in = new ByteArrayInputStream(data);
+			fin  = new BufferedInputStream(in);
 			byte buf[] = new byte[READ_BLOCK_SIZE];
 
 			rest_len = t_len;
@@ -122,7 +128,7 @@ public class DebitBinHandler extends Thread
 			{
 				if (rest_len < READ_BLOCK_SIZE)  read_len = rest_len;
 				else read_len = READ_BLOCK_SIZE;
-					
+
 				rtn = fin.read(buf, 0, read_len);	
 
 				rest_len -= rtn;
@@ -137,7 +143,7 @@ public class DebitBinHandler extends Thread
 
 			fin.close();
 			return 1;
-																													    	
+
 		} catch (IOException e) {
 			e.printStackTrace(); 
 			return -1;
@@ -192,7 +198,7 @@ public class DebitBinHandler extends Thread
 		dout.write(sbuf,0,sbuf.length);
 		dout.flush();
 
-/*
+		/*
 		if (sbuf.length > 40)
 		{
 			LUtil.println("CHECK:("+MSG_IDX+") send_msg(S:"+wlen+":"+midx+":"+SUtil.hex_encode(sbuf,0,32)+"..."+SUtil.hex_encode(sbuf,midx-8,8)+")");
@@ -200,14 +206,14 @@ public class DebitBinHandler extends Thread
 		{
 			LUtil.println("CHECK:("+MSG_IDX+") send_msg(S:"+wlen+":"+midx+":"+SUtil.hex_encode(sbuf,0,midx)+")");
 		}
-*/
+		 */
 
 		return wlen;
 	}
 
 	int processClientNewKey() throws IOException
 	{
-	 	String[] van_addrs = SUtil.split(CUtil.get("fpeg.gate.00.v.addr"),":");
+		String[] van_addrs = SUtil.split(CUtil.get("fpeg.gate.00.v.addr"),":");
 
 		s_cs		=	new Socket();
 		s_cs.setSoTimeout(READ_TIMEOUT*1000); 	//read timeout             
@@ -229,10 +235,10 @@ public class DebitBinHandler extends Thread
 
 		sbuf[sbuf.length-1] = C_ETX;
 
-/*
+		/*
 		LUtil.println("CHECK:("+MSG_IDX+") send_key_msg("+van_addrs[0]+":"+van_addrs[1]+")(S:"+sbuf.length+":"+SUtil.hex_encode(sbuf,0,32)+"..."+SUtil.hex_encode(sbuf,sbuf.length-8,8)+")");
-*/
-		
+		 */
+
 		DataOutputStream dout = new DataOutputStream(s_cs.getOutputStream());
 		dout.write(sbuf,0,sbuf.length);
 		dout.flush();
@@ -241,9 +247,9 @@ public class DebitBinHandler extends Thread
 		DataInputStream din = new DataInputStream(s_cs.getInputStream());
 		din.readFully(rbuf) ;
 
-/*
+		/*
 		LUtil.println("CHECK:("+MSG_IDX+") read_key_msg(S:"+rbuf.length+":"+SUtil.hex_encode(rbuf,0,rbuf.length)+")");
-*/
+		 */
 
 		int midx = 7;
 
@@ -280,9 +286,9 @@ public class DebitBinHandler extends Thread
 
 			if (rtn_len <=0)
 			{
-/*
+				/*
 				LUtil.println("DEBUG processServerMsg:("+rtn_len+") 세션 종료됨");
-*/
+				 */
 				break;
 			}
 			else smsg.clen += rtn_len;
@@ -299,7 +305,7 @@ public class DebitBinHandler extends Thread
 				if (0 == smsg.elen)
 				{
 					smsg.elen = ((smsg.mbuf[1] << 8) & 0x0000ff00) + (smsg.mbuf[2] & 0x000000ff) + 4;
-	
+
 					if (smsg.elen > 9999 || smsg.elen < 7)
 					{
 						LUtil.println("ERROR:() format-error1!!");
@@ -307,27 +313,27 @@ public class DebitBinHandler extends Thread
 					}
 				}
 				if (smsg.elen > smsg.clen) break;
-	
+
 				if (C_STX != smsg.mbuf[0] || C_ETX != smsg.mbuf[smsg.elen-1])
 				{
 					LUtil.println("ERROR:() format-error2!!");
 					throw new IllegalStateException("ERROR:() format-error2!!");
 				}
-	
+
 				if ('D' != smsg.mbuf[5] || '1' != smsg.mbuf[6]) /* msg_type : D1 */
 				{
 					LUtil.println("ERROR:() format-error3!!");
 					throw new IllegalStateException("ERROR:() format-error3!!");
 				}
-	
+
 				byte[] mbuf = (byte[])(smsg.mbuf).clone();
-	
+
 				processServerData(mbuf ,smsg.elen);
-	
+
 				sidx = smsg.elen;
 				clen = smsg.clen - smsg.elen;
 				System.arraycopy(mbuf,sidx ,smsg.mbuf,0,clen);
-	
+
 				min_len   = 4 + 1;
 				smsg.clen = clen;
 				smsg.elen = 0;
@@ -370,7 +376,7 @@ public class DebitBinHandler extends Thread
 		LUtil.println("[DAEMON->CORP] rpy_msg["+new String (wbuf, 0, wbuf.length, "8859_1")+"] len["+wbuf.length+"]");
 
 		out = new DataOutputStream(cs.getOutputStream()); 
-				
+
 		out.write(wbuf, 0, wbuf.length); 
 
 		return wbuf.length;
@@ -515,11 +521,11 @@ public class DebitBinHandler extends Thread
 				eidx = rno & 0x3f;
 				rno = rno>>>6;
 
-				bidx = eidx * 16;
-				for(int k=0; (k<16 && tlen<slen); k++,tlen++)
-				{
-					tbuf[tlen] = (byte)(hmsg.ctr_blocks[bidx+k] ^ sbuf[tlen]);
-				}
+		bidx = eidx * 16;
+		for(int k=0; (k<16 && tlen<slen); k++,tlen++)
+		{
+			tbuf[tlen] = (byte)(hmsg.ctr_blocks[bidx+k] ^ sbuf[tlen]);
+		}
 			}
 		}
 
@@ -560,13 +566,13 @@ public class DebitBinHandler extends Thread
 	{
 		try
 		{
-	    	SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");//AES/ECB/NoPadding
+			SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");//AES/ECB/NoPadding
 
-	    	Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");//"AES"
+			Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");//"AES"
 
-	    	cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 
-	    	return cipher.doFinal(pbuf,idx,len);
+			return cipher.doFinal(pbuf,idx,len);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -578,13 +584,13 @@ public class DebitBinHandler extends Thread
 	{
 		try
 		{
-	    	SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");//AES/ECB/NoPadding
+			SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");//AES/ECB/NoPadding
 
-	    	Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");//"AES"
+			Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");//"AES"
 
-	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+			cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
 
-	    	return cipher.doFinal(pbuf,idx,len);
+			return cipher.doFinal(pbuf,idx,len);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -596,13 +602,13 @@ public class DebitBinHandler extends Thread
 	{
 		try
 		{
-	    	SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");
+			SecretKeySpec skeySpec = new SecretKeySpec(k16, "AES");
 
-	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//"AES"
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");//"AES"
 
-	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(iv));
+			cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(iv));
 
-	    	return cipher.doFinal(pbuf,idx,len);
+			return cipher.doFinal(pbuf,idx,len);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -614,30 +620,32 @@ public class DebitBinHandler extends Thread
 	{
 		int msg_len = 4; /* 길이 */
 		int rtn_len = 0;
-																
+
 		byte[]	b_len = new byte[msg_len];
 		if (msg_len != (rtn_len = in.read(b_len, 0, msg_len)))
 		{
 			throw new IOException("ReadMsg1 error - (" + rtn_len + ")오류!!");
 		}
 
-/*
+		/*
 		LUtil.println("DEBUG ReadMsg1=[" + new String(b_len) + "]");
-*/
+		 */
 
 		msg_len = Integer.parseInt(new String(b_len));
 
-		byte[]	rbuf = new byte[msg_len];
+		byte[]	rbuf = new byte[msg_len+4];
 
-		if (msg_len != (rtn_len = in.read(rbuf, 0, msg_len)))
+		System.arraycopy(b_len, 0, rbuf, 0, 4); /* 길이복사 */
+		
+		if (msg_len != (rtn_len = in.read(rbuf, 4, msg_len)))
 		{
 			throw new IOException("ReadMsg2 error - (" + rtn_len + ")오류!!");
 		}
 
-/*
+		/*
 		LUtil.println("DEBUG ReadMsg2=[" + new String(rbuf) + "]");
-*/
-		
+		 */
+
 		return rbuf;
 	}
 	public byte[] ReadLine(DataInputStream in, int msg_len) throws Exception
@@ -647,7 +655,7 @@ public class DebitBinHandler extends Thread
 		int cnt = 0;
 
 		int rest_len = msg_len;
-																
+
 		byte[]	rbuf = new byte[msg_len];
 
 		while (true)
@@ -670,71 +678,32 @@ public class DebitBinHandler extends Thread
 			break;
 		}
 
-/*
+		/*
 		LUtil.println("DEBUG ReadLine =[" + new String(rbuf) + "]");
-*/
-		
+		 */
+
 		return rbuf;
 	}
 
-	public byte[] ReadMsgIncLen(DataInputStream in) throws Exception
+	public byte[] checkMsgLen(DataInputStream msg_in, DataInputStream bin_in) throws Exception
 	{
-		int msg_len = 4; /* 길이 */
-		int rtn_len = 0;
-																
-		byte[]	b_len = new byte[msg_len];
-		if (msg_len != (rtn_len = in.read(b_len, 0, msg_len)))
-		{
-			throw new IOException("ReadMsg1 error - (" + rtn_len + ")오류!!");
-		}
-
-/*
-		LUtil.println("DEBUG ReadMsg1=[" + new String(b_len) + "]");
-*/
-
-		msg_len = Integer.parseInt(new String(b_len));
-
-		byte[]	rbuf = new byte[msg_len+4];
-
-		System.arraycopy(b_len, 0, rbuf, 0, 4); /* 길이복사 */
-
-		if (msg_len != (rtn_len = in.read(rbuf, 4, msg_len)))
-		{
-			throw new IOException("ReadMsg2 error - (" + rtn_len + ")오류!!");
-		}
-
-/*
-		LUtil.println("DEBUG ReadMsg2=[" + new String(rbuf) + "]");
-*/
-		
-		return rbuf;
-	}
-
-	public boolean storeMsg(String fileName, DataInputStream in) throws Exception
-	{
-		BufferedOutputStream fout = null;
 
 		int 	t_len = 0;
-		int 	rtn_len = 0;
 		int 	rest_len = 0;
 		int 	read_len = 0;
-
+		byte[] buf = null;
+		byte[] 	block_buf = null;
 		try
 		{
-
-		fout = new BufferedOutputStream(new FileOutputStream(fileName));
-		byte[] 	buf = ReadMsgIncLen(in);
-		String 	MsgCode = new String(buf, 4+9+8+2, 7, "8859_1");
-
-		fout.write(buf); fout.flush();
-
-		LUtil.println("[CORP->DAEMON] req_msg["+new String (buf, 0, buf.length, "8859_1")+"] len["+buf.length+"] fileName ["+fileName+"]");
+			byte[] 	msg_buf = ReadMsg(msg_in);
+			String 	MsgCode = new String(msg_buf, 4+9+8+2, 7, "8859_1");
 
 			/* 증빙자료는  증빙자료 추가로 수신해야된다. */
 			if (MsgCode.equals("0600601"))
 			{
-	
-				t_len = Integer.parseInt(new String(buf, 4+244, 7, "8859_1"));
+
+
+				t_len = Integer.parseInt(new String(msg_buf, 4+244, 7, "8859_1"));
 
 				rest_len = t_len;
 
@@ -742,25 +711,27 @@ public class DebitBinHandler extends Thread
 				{
 					if (rest_len > READ_BLOCK_SIZE) read_len = READ_BLOCK_SIZE;
 					else read_len = rest_len;
-
-					byte[] 	block_buf = ReadLine(in, read_len);
-
-					fout.write(block_buf, 0, read_len); fout.flush();
-
+					block_buf = ReadLine(bin_in, read_len);
 					rest_len -= read_len;
 					if (rest_len == 0) break;
 				}
 
 				LUtil.println("증빙파일 size[" + t_len + "]");
+				
+				
+				buf = new byte[msg_buf.length + t_len];
+				System.arraycopy(msg_buf, 0, buf, 0, msg_buf.length);
+				System.arraycopy(block_buf, 0, buf, msg_buf.length, block_buf.length);
+			}else {
+				buf = new byte[msg_buf.length];
+				System.arraycopy(msg_buf, 0, buf, 0, msg_buf.length);
 			}
-
+			
 		}catch (Exception e) {
 			LUtil.println(e.getMessage());
-			return false;
-		}finally{
-			try{if (fout != null) fout.close();}catch(Exception e){};
+			return null;
 		}
-		return true;
+		return buf;
 	}
 
 
