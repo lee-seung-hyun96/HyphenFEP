@@ -1,15 +1,15 @@
-package Firm_Bypass;
+package im.hyphen.firm_bypass;
 
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import Crypto.HyphenEncSocket;
+import im.hyphen.crypto.HyphenEncSocket;
 
 import java.text.SimpleDateFormat;
 import java.sql.*;
-import Util.*;
+import im.hyphen.util.*;
 
 public class FirmGateHandler extends Thread
 {

@@ -1,4 +1,4 @@
-package Crypto;
+package im.hyphen.crypto;
 
 import java.io.*;
 import java.net.*;

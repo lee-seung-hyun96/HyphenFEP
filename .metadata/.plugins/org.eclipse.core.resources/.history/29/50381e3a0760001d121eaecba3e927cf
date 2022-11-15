@@ -1,6 +1,6 @@
-package Crypto;
+package im.hyphen.crypto;
 
-import Util.SUtil;
+import im.hyphen.util.SUtil;
 
 public class HyphenBankSeed
 {
