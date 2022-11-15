@@ -1,4 +1,4 @@
-package Crypto;
+package im.hyphen.crypto;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.security.interfaces.RSAPublicKey;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import Util.SUtil;
+import im.hyphen.util.SUtil;
 
 class KSBankSeed
 {

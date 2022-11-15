@@ -1,10 +1,10 @@
-package Crypto;
+package im.hyphen.crypto;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import Util.*;
+import im.hyphen.util.*;
 
 
 public class KsnetSndEnc extends Thread

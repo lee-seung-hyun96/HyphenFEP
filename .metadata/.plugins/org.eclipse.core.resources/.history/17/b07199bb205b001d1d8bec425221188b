@@ -1,4 +1,4 @@
-package Firm_Bypass;
+package im.hyphen.firm_bypass;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,10 +8,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import Util.CUtil;
-import Util.DUtil;
-import Util.LUtil;
-import Util.SUtil;
+import im.hyphen.util.CUtil;
+import im.hyphen.util.DUtil;
+import im.hyphen.util.LUtil;
+import im.hyphen.util.SUtil;
 
 public class TestFirmBypass extends Thread{
 	String test_send = "";

@@ -1,4 +1,4 @@
-package Firm_Bypass;
+package im.hyphen.firm_bypass;
 
 import java.io.*;
 import java.net.*;
@@ -6,7 +6,7 @@ import java.util.*;
 import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
-import Util.*;
+import im.hyphen.util.*;
 import java.sql.*;
 
 public class VirtualAccountDB extends Thread

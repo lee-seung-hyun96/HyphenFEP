@@ -1,4 +1,4 @@
-package Firm_Bypass;
+package im.hyphen.firm_bypass;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,8 +9,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 
-import Crypto.KSBankEncSocket;
-import Util.*;
+import im.hyphen.crypto.KSBankEncSocket;
+import im.hyphen.util.*;
 
 public class FirmBypass{
 
