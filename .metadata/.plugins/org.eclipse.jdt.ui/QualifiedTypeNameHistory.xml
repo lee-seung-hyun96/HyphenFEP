@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="Util.CUtil"/>
-    <fullyQualifiedTypeName name="Util.SUtil"/>
-    <fullyQualifiedTypeName name="Util.LUtil"/>
-    <fullyQualifiedTypeName name="java.io.DataInputStream"/>
-    <fullyQualifiedTypeName name="java.io.OutputStream"/>
-    <fullyQualifiedTypeName name="com.sun.tools.javac.util.ArrayUtils"/>
-    <fullyQualifiedTypeName name="java.util.concurrent.Executors"/>
-    <fullyQualifiedTypeName name="java.util.concurrent.ExecutorService"/>
-    <fullyQualifiedTypeName name="java.util.concurrent.ScheduledExecutorService"/>
-    <fullyQualifiedTypeName name="java.util.concurrent.TimeUnit"/>
+    <fullyQualifiedTypeName name="im.hyphen.util.CUtil"/>
+    <fullyQualifiedTypeName name="im.hyphen.util.SUtil"/>
+    <fullyQualifiedTypeName name="im.hyphen.util.LUtil"/>
     <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
-    <fullyQualifiedTypeName name="im.hyphen.util.Well512"/>
-    <fullyQualifiedTypeName name="java.io.InputStream"/>
 </qualifiedTypeNameHistroy>

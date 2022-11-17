@@ -1,0 +1,11 @@
+package im.hyphen.firm_bypass;
+
+public class TestFirmBypass {
+	
+public static void main(String[] args) {
+	
+	String test_send = "";
+	
+	new FirmBypassDB(test_send).start();
+}
+}
