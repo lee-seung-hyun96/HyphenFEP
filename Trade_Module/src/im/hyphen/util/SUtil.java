@@ -289,7 +289,22 @@ public class SUtil
 		
 		return str;
 	}
-	
+
+	public static char[] b2cs(byte[] ebytes)
+	{
+		char[] echars = new char[ebytes.length];
+		for(int i=0; i<echars.length; i++) echars[i] = (char)ebytes[i];
+
+		return echars;
+	}
+
+	public static byte[] c2bs(char[] echars)
+	{
+		byte[] ebytes = new byte[echars.length];
+		for(int i=0; i<echars.length; i++) ebytes[i] = (byte)echars[i];
+
+		return ebytes;
+	}
 	//ksdebit_gate
 	
     static char HALF_CHARS[]    = null;
