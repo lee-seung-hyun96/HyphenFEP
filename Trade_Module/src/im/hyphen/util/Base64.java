@@ -103,25 +103,9 @@ public class Base64
 		return output;
 	}
 
-	public static char[] b2cs(byte[] ebytes)
-	{
-		char[] echars = new char[ebytes.length];
-		for(int i=0; i<echars.length; i++) echars[i] = (char)ebytes[i];
-
-		return echars;
-	}
-
-	public static byte[] c2bs(char[] echars)
-	{
-		byte[] ebytes = new byte[echars.length];
-		for(int i=0; i<echars.length; i++) ebytes[i] = (byte)echars[i];
-
-		return ebytes;
-	}
-
 	public static byte[] decode(byte[] ebytes)
 	{
-		return decode(b2cs(ebytes));
+		return decode(SUtil.b2cs(ebytes));
 	}
 
 	public static byte[] decode(String encoded)
@@ -205,7 +189,7 @@ public class Base64
 	{
 
 		try {
-			char[] echars =  b2cs(URLDecoder.decode(new String(ebytes), "ksc5601").getBytes());
+			char[] echars =  SUtil.b2cs(URLDecoder.decode(new String(ebytes), "ksc5601").getBytes());
 			return Base64.decode(echars);
 			}catch(java.io.UnsupportedEncodingException ue){}
 		return null;

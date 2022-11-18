@@ -1,6 +1,9 @@
 package im.hyphen.firm_bypass;
 
 import im.hyphen.util.*;
+
+import java.io.InputStream;
+
 import im.hyphen.receiver.MsgReceiver;
 
 public class FirmBypass{
@@ -46,7 +49,12 @@ public class FirmBypass{
 						break;
 					case firmDebitGate:
 						//debit_gate
-						new DebitBinHandler(send_info).start();
+						InputStream rs_in = null;
+						if ((send_info[2].equals("PRW") || send_info[2].equals("PRD")) && send_info[7].equals("0600601")) {
+							CopyInputStream cis = new CopyInputStream(DUtil.bin_in);
+							rs_in = cis.getCopy();
+						}
+						new DebitBinHandler(send_info, rs_in).start();
 						
 						break;
 					case firmVirtureGate:

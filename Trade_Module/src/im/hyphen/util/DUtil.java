@@ -114,7 +114,7 @@ public class DUtil
 			pstmt.setString (1, RequestDate.substring(0,8) );
 
 			rs = pstmt.executeQuery();
-
+			
 			while (rs.next()) {
 				cnt++;
 				send_info[0] = "0000";              
