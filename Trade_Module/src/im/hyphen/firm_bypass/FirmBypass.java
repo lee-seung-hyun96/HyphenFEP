@@ -12,7 +12,7 @@ public class FirmBypass{
 	final static int firmEGate = 1; 
 	final static int firmDebitGate = 2;
 	final static int firmVirtureGate = 3;
-	final static int nomal = 4;
+	final static int normal = 4;
 
 
 	public static void main(String[] args) throws Exception {
@@ -60,7 +60,7 @@ public class FirmBypass{
 					case firmVirtureGate:
 					
 						break;
-					case nomal:
+					case normal:
 						
 						break;
 					default:

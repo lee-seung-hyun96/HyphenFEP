@@ -1,6 +1,8 @@
 package im.hyphen.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class SUtil
@@ -392,6 +394,23 @@ public class SUtil
 	 	}
 
 	 	return oData;
-	}	
-	
+	}
+
+	public static String createBlankPadding(int cnt) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i < cnt; i++) sb.append(' ');
+		return sb.toString();
+	}
+
+	public static String getDate() {
+		SimpleDateFormat sdf;
+		sdf = new SimpleDateFormat("YYYYMMdd");
+		return sdf.format(new Date());
+	}
+
+	public static String getTime() {
+		SimpleDateFormat sdf;
+		sdf = new SimpleDateFormat("hhmmss");
+		return sdf.format(new Date());
+	}
 }
