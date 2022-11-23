@@ -20,6 +20,7 @@ public class DUtil
 	static String PASSWORD      = "";
 	static String TABLE_NAME    = "";
 	public static String VrUpdateType = null;
+
 	public static Connection getConnection()
 	{
 		if (null == DRIVER_NAME || CUtil.isNew())
@@ -501,6 +502,5 @@ public class DUtil
 		cal.add(Calendar.DATE,cday);
 
 		return getDate(cal);
-	}		
-	
+	}
 }
