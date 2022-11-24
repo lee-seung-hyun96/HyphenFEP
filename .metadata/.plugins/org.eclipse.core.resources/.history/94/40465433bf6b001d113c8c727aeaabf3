@@ -494,6 +494,7 @@ public class DUtil
 		cal.add(Calendar.DATE,cday);
 
 		return getDate(cal);
+<<<<<<< HEAD
 	}		
 
 	public static HyphenTradeData[] getSendData(HyphenTradeData[] htd, int cnt){
@@ -501,5 +502,7 @@ public class DUtil
 		System.arraycopy(htd, 0, sendHtd, 0, cnt);
 
 		return sendHtd;
+=======
+>>>>>>> 65643ce6a72296ec0ea9a62c65e7500a2c28963b
 	}
 }
