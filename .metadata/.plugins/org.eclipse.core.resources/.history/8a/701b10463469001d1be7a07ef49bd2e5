@@ -1,0 +1,22 @@
+package im.hyphen.msgVO;
+
+public class HyphenTradeData {
+
+    private String reqCode; /*요청일자*/
+    private String svcType; /*서비스타입*/
+    private String bankCode; /*은행코드*/
+    private String compCode; /*업체코드*/
+    private String seqNo; /*전문번호*/
+    private String transCnt; /*1자리 송신횟수*/
+    private String sendDate; /*8자리 전송일자*/
+    private String sendTime; /*6자리 전송시간*/
+    private String respCode; /*4자리 응답코드*/
+    private String bankRespCode; /*4자리 은행응답코드*/
+    private String reqDate; /*8자리 조회일자*/
+    private String reqNo; /*6자리 조회번호*/
+    private String bankSeqNo; /*15자리 은행전문번호*/
+    private String reserved; /*13자리 예비*/
+	
+    
+    
+}

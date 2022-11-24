@@ -4,21 +4,21 @@ import im.hyphen.util.SUtil;
 
 public class HYPHENHeader {
 
-    private String tranCode; /*9ìë¦¬ ì‹ë³„ì½”ë“œ*/
-    private String compCode; /*8ìë¦¬ ì—…ì²´ì½”ë“œ*/
-    private String bankCode2; /*2ìë¦¬ ì€í–‰ì½”ë“œ*/
-    private String msgCode; /*7ìë¦¬ ì „ë¬¸ì½”ë“œ*/
-    private String transCnt; /*1ìë¦¬ ì†¡ì‹ íšŸìˆ˜*/
-    private String seqNo; /*6ìë¦¬ ì „ë¬¸ë²ˆí˜¸*/
-    private String sendDate; /*8ìë¦¬ ì „ì†¡ì¼ì*/
-    private String sendTime; /*6ìë¦¬ ì „ì†¡ì‹œê°„*/
-    private String respCode; /*4ìë¦¬ ì‘ë‹µì½”ë“œ*/
-    private String bankRespCode; /*4ìë¦¬ ì€í–‰ì‘ë‹µì½”ë“œ*/
-    private String reqDate; /*8ìë¦¬ ì¡°íšŒì¼ì*/
-    private String reqNo; /*6ìë¦¬ ì¡°íšŒë²ˆí˜¸*/
-    private String bankSeqNo; /*15ìë¦¬ ì€í–‰ì „ë¬¸ë²ˆí˜¸*/
-    private String bankCode; /*3ìë¦¬ ì€í–‰ì½”ë“œ*/
-    private String reserved; /*13ìë¦¬ ì˜ˆë¹„*/
+    private String tranCode; /*9ÀÚ¸® ½Äº°ÄÚµå*/
+    private String compCode; /*8ÀÚ¸® ¾÷Ã¼ÄÚµå*/
+    private String bankCode2; /*2ÀÚ¸® ÀºÇàÄÚµå*/
+    private String msgCode; /*7ÀÚ¸® Àü¹®ÄÚµå*/
+    private String transCnt; /*1ÀÚ¸® ¼Û½ÅÈ½¼ö*/
+    private String seqNo; /*6ÀÚ¸® Àü¹®¹øÈ£*/
+    private String sendDate; /*8ÀÚ¸® Àü¼ÛÀÏÀÚ*/
+    private String sendTime; /*6ÀÚ¸® Àü¼Û½Ã°£*/
+    private String respCode; /*4ÀÚ¸® ÀÀ´äÄÚµå*/
+    private String bankRespCode; /*4ÀÚ¸® ÀºÇàÀÀ´äÄÚµå*/
+    private String reqDate; /*8ÀÚ¸® Á¶È¸ÀÏÀÚ*/
+    private String reqNo; /*6ÀÚ¸® Á¶È¸¹øÈ£*/
+    private String bankSeqNo; /*15ÀÚ¸® ÀºÇàÀü¹®¹øÈ£*/
+    private String bankCode; /*3ÀÚ¸® ÀºÇàÄÚµå*/
+    private String reserved; /*13ÀÚ¸® ¿¹ºñ*/
 
     public HYPHENHeader () {}
 

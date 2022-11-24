@@ -10,16 +10,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import im.hyphen.msgVO.HyphenTradeData;
+
 
 public class DUtil
 {
-	public static InputStream bin_in = null;
+
 	static String DRIVER_NAME   = null;
 	static String DB_URL        = null;
 	static String USER_NAME     = "";
 	static String PASSWORD      = "";
 	static String TABLE_NAME    = "";
 	public static String VrUpdateType = null;
+	final static int MaxLen = 100;
 	public static Connection getConnection()
 	{
 		if (null == DRIVER_NAME || CUtil.isNew())
@@ -46,7 +49,7 @@ public class DUtil
 		return null;
 	}
 
-	public static boolean Update_RecvData(String[] msg_info)
+	public static boolean Update_RecvData(HyphenTradeData htd)
 	{
 		Connection          con = null;
 		PreparedStatement   pstmt = null;
@@ -54,9 +57,9 @@ public class DUtil
 		String RecvDate     = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 		TABLE_NAME          = CUtil.get("JDBC_TABLENAME");
 
-		if (msg_info[0].equals("0000")) recv_flag = "Y";
-		else if (msg_info[0].equals("CONE")) recv_flag = "C";  // connect error 
-		else if (msg_info[0].equals("TIME")) recv_flag = "T";  // response timeout
+		if (htd.getErrCode().equals("0000")) recv_flag = "Y";
+		else if (htd.getErrCode().equals("CONE")) recv_flag = "C";  // connect error 
+		else if (htd.getErrCode().equals("TIME")) recv_flag = "T";  // response timeout
 		else recv_flag = "F"; 								
 
 		String QRY = "UPDATE "+TABLE_NAME+" SET RECV_FLAG = ?, RECV_DATE = ?, RECV_TIME = ?, RECV_MSG = ? WHERE REQ_DATE = ? AND SVC_TYPE = ? AND BANK_CODE = ? AND COMP_CODE = ? AND SEQ_NO = ? AND MSG_CODE = ? AND SEND_FLAG = 'Y' AND RECV_FLAG = 'N' ";
@@ -71,13 +74,13 @@ public class DUtil
 			pstmt.setString (1, recv_flag       );
 			pstmt.setString (2, RecvDate.substring(0,8) );
 			pstmt.setString (3, RecvDate.substring(8,14) );
-			pstmt.setString (4, msg_info[9]     );
-			pstmt.setString (5, msg_info[1]     );
-			pstmt.setString (6, msg_info[2]     );
-			pstmt.setString (7, msg_info[4]     );
-			pstmt.setString (8, msg_info[5]     );
-			pstmt.setString (9, msg_info[6]     );
-			pstmt.setString (10, msg_info[7]    );
+			pstmt.setString (4, htd.getRecvMsg()     );
+			pstmt.setString (5, htd.getReqDate()     );
+			pstmt.setString (6, htd.getSvcType()     );
+			pstmt.setString (7, htd.getBankCode()     );
+			pstmt.setString (8, htd.getCompCode()     );
+			pstmt.setString (9, htd.getSeqNo()     );
+			pstmt.setString (10, htd.getMsgCode()    );
 
 			cnt = pstmt.executeUpdate();
 
@@ -92,13 +95,16 @@ public class DUtil
 		return false;
 	}
 
-	public static String[] Select_SendData ()
+	public static HyphenTradeData[] Select_SendData ()
 	{
 		Connection          con     = null;
 		PreparedStatement   pstmt   = null;
 		ResultSet           rs      = null;
+
 		int                 cnt     = 0;
-		String send_info[]  = {"9999", " ", " ", " ", " ", " ", " ", " ", " "} ;
+		HyphenTradeData[] 	htd = new HyphenTradeData[MaxLen];
+		HyphenTradeData[] 	sendHtd = null;
+
 		String RequestDate  = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 		TABLE_NAME          = CUtil.get("JDBC_TABLENAME");
 
@@ -108,71 +114,57 @@ public class DUtil
 		try {
 			con = getConnection();
 			con.setAutoCommit(false);
-
 			pstmt = con.prepareStatement(QRY);
-
 			pstmt.setString (1, RequestDate.substring(0,8) );
-
 			rs = pstmt.executeQuery();
-			
+
 			while (rs.next()) {
-				cnt++;
-				send_info[0] = "0000";              
-				send_info[1] = rs.getString(1);     /* request date */
-				send_info[2] = rs.getString(2);     /* svc_type */
-				send_info[3] = "0300";     			/* msg_len */
-				send_info[4] = rs.getString(3);     /* bank_code */
-				send_info[5] = rs.getString(4);     /* comp_code */
-				send_info[6] = rs.getString(5);     /* seq_numb */
-				send_info[7] = rs.getString(6);     /* msg_code */
-				send_info[8] = rs.getString(7);     /* send_msg */
+
+				htd[cnt] = new HyphenTradeData();
+				htd[cnt].setReqDate(rs.getString(1));	/* request date */
+				htd[cnt].setSvcType(rs.getString(2));	/* svc_type */
+				htd[cnt].setBankCode(rs.getString(3));	/* bank_code */
+				htd[cnt].setCompCode(rs.getString(4));	/* comp_code */
+				htd[cnt].setSeqNo(rs.getString(5));		/* seq_no */
+				htd[cnt].setMsgCode(rs.getString(6));	/* msg_code */
+				htd[cnt].setSendMsg(rs.getString(7));	/* send_msg */
 
 				/* binary include msg_len */
-				if ((send_info[2].equals("PRW") || send_info[2].equals("PRD")) && send_info[7].equals("0600601")) {
+				if ((htd[cnt].getSvcType().equals("PRW") || htd[cnt].getSvcType().equals("PRD")) && htd[cnt].getMsgCode().equals("0600601")) {
 					InputStream rs_in = rs.getBinaryStream(8); /* binary data */
 					CopyInputStream cis = new CopyInputStream(rs_in);
-					bin_in = cis.getCopy();
+					htd[cnt].setBin_in(cis.getCopy());
 					rs_in.close();
 				}
-				
-				if (cnt >= 1) break;  
+				cnt++;
+				if (cnt >= (MaxLen)) break;  
 			}
 
 			if (cnt < 1)
 			{
-				send_info[0] = "1404";  /* not found */
-			}
-			else
-			{
-				pstmt.close(); pstmt= null;
-
-				QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ? WHERE REQ_DATE = ? AND SVC_TYPE = ? AND BANK_CODE = ? AND COMP_CODE = ? AND SEQ_NO= ? AND MSG_CODE = ? ";
-
-				pstmt = con.prepareStatement(QRY);
-
-				pstmt.setString (1, RequestDate.substring(0,8) );
-				pstmt.setString (2, RequestDate.substring(8,14) );
-				pstmt.setString (3, send_info[1] );
-				pstmt.setString (4, send_info[2] );
-				pstmt.setString (5, send_info[4] );
-				pstmt.setString (6, send_info[5] );
-				pstmt.setString (7, send_info[6] );
-				pstmt.setString (8, send_info[7] );
-
-				cnt  = pstmt.executeUpdate();
-				con.commit();
+				htd = null;  /* not found */
+				System.out.println("htd xxxxxxx");
+				return htd;
+			}else {
+				sendHtd = getSendData(htd, cnt);
+					pstmt.close(); pstmt= null;
+					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ? WHERE SEQ_NO BETWEEN '" + sendHtd[0].getSeqNo() +" ' AND '"+ sendHtd[sendHtd.length-1].getSeqNo() + "'";
+					pstmt = con.prepareStatement(QRY);
+					pstmt.setString (1, RequestDate.substring(0,8) );
+					pstmt.setString (2, RequestDate.substring(8,14) );
+					cnt  = pstmt.executeUpdate();
+					con.commit();
 			}
 		}catch(Throwable e) {
-			send_info[0] = "9999";
 			LUtil.println(e);
 		} finally {
 			try {if(pstmt!=null){pstmt.close();pstmt= null;}}catch(Exception e){}
 			try {if(con !=null) {con.close( );}}catch(Exception e){}
 			try {if(rs !=null) {rs.close( ); rs = null;}}catch(Exception e){}
 		}
-		return send_info;
+		return sendHtd;
 	}
-	
+
 	public static HashMap<String,String> select0900_100 (HashMap<String,String> dHash)
 	{
 		Connection          con     = null;
@@ -188,14 +180,14 @@ public class DUtil
 		String 	db_amt = "";
 		double 	d_db_amt = 0;
 		double 	d_amt = 0;
-		
+
 		String  send_date  	= dHash.get("send_date");
 		String  bank_code		= dHash.get("bank_code");
 		String  vr_acct_no 	= dHash.get("vr_acct_no");
 		String  amt         = dHash.get("amt");
-		
+
 		HashMap<String,String> rHash = new HashMap<String,String>();
-		
+
 		rHash.put("error_code", "L099");
 
 		/* check account */
@@ -209,7 +201,7 @@ public class DUtil
 			LUtil.println("DEBUG 0900/100 search BANKCODE[" + bank_code + "], VR_ACC[" + vr_acct_no + "], AMT[" + amt + "], SEND_DATE[" + send_date + "]");
 
 			d_amt = Long.parseLong(amt);
-			
+
 			pstmt.setString (1, bank_code     );
 			pstmt.setString (2, vr_acct_no     );
 
@@ -224,12 +216,12 @@ public class DUtil
 
 				break;
 			}
-			
+
 			if(final_date.equals(""))
 			{
 				final_date = "99991231";
 			}
-			
+
 			if (cnt < 1)
 			{
 				LUtil.println( "ERROR 0900/100 Not found information  bank_code("+bank_code+") account_no("+vr_acct_no+")");
@@ -251,7 +243,7 @@ public class DUtil
 				rHash.put("error_code", "0000");  
 				rHash.put("corp_name", corp_name);  
 			}
-	
+
 		}catch(Throwable e) {
 			LUtil.println(e);
 		} finally {
@@ -259,11 +251,11 @@ public class DUtil
 			try {if(con !=null) {con.close( );/*con = null;*/}}catch(Exception e){}
 			try {if(rs !=null) {rs.close( ); rs = null;}}catch(Exception e){}
 		}
-		
+
 		return rHash;
 	}
 
-	
+
 	public static boolean insert0200_300(String tran_code,String comp_code,String bank_code,String mess_code,String mess_diff,String tran_cnt,String seq_no,String tran_date,String tran_time,String stan_resp_code,String bank_resp_code,String inqu_date,String inqu_no,String bank_seq_no,String bank_code_3,String filler_1,String corp_acct_no,String comp_cnt,String deal_sele,String in_bank_code,String total_amt,String balance,String bran_code,String cust_name,String check_no,String cash,String out_bank_check,String etc_check,String vr_acct_no,String deal_date,String deal_time,String serial_no,String in_bank_code_3,String bran_code_3,String filler_2)
 	{
 		Connection        con   = null;
@@ -310,9 +302,9 @@ public class DUtil
 			pstmt.setString (30, deal_time     );
 			pstmt.setString (31, serial_no     );
 			pstmt.setString (32, filler_2      );
-			
+
 			pstmt.executeUpdate();
-			
+
 			if (VrUpdateType.equals("Y") && Long.parseLong(total_amt) > 0)
 			{
 				pstmt = con.prepareStatement(INS3_QRY);	
@@ -321,7 +313,7 @@ public class DUtil
 				pstmt.setString (3, total_amt     );
 				pstmt.executeUpdate();
 			}
-			
+
 
 			con.commit();
 			return true;
@@ -449,7 +441,7 @@ public class DUtil
 		}
 		return false;
 	}
-	
+
 
 	public static String getCurrDate()
 	{
@@ -502,5 +494,11 @@ public class DUtil
 
 		return getDate(cal);
 	}		
-	
+
+	public static HyphenTradeData[] getSendData(HyphenTradeData[] htd, int cnt){
+		HyphenTradeData[] sendHtd = new HyphenTradeData[cnt];
+		System.arraycopy(htd, 0, sendHtd, 0, cnt);
+
+		return sendHtd;
+	}
 }

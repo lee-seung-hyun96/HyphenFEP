@@ -1,0 +1,5 @@
+package im.hyphen.msgVO;
+
+public class HyphenTradeData {
+
+}

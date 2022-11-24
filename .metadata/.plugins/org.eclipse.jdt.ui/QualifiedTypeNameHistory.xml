@@ -4,4 +4,10 @@
     <fullyQualifiedTypeName name="im.hyphen.util.SUtil"/>
     <fullyQualifiedTypeName name="im.hyphen.util.LUtil"/>
     <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+    <fullyQualifiedTypeName name="im.hyphen.sender.MsgSender"/>
+    <fullyQualifiedTypeName name="im.hyphen.msgVO.HyphenTradeData"/>
+    <fullyQualifiedTypeName name="java.lang.System"/>
+    <fullyQualifiedTypeName name="java.util.concurrent.Executors"/>
+    <fullyQualifiedTypeName name="java.util.concurrent.ExecutorService"/>
+    <fullyQualifiedTypeName name="java.util.concurrent.ThreadPoolExecutor"/>
 </qualifiedTypeNameHistroy>
