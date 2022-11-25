@@ -3,19 +3,19 @@ package im.hyphen.msgVO;
 public class SDSHeader {
 
     private String trCode; /* Transaction Code [9] */
-    private String compCode; /* ÀºÇàºÎ¿© ¾÷Ã¼ÄÚµå [12] */
-    private String bankCode; /* ÀºÇà ÄÚµå [2] */
-    private String msgCode; /* Àü¹® ÄÚµå [4] */
-    private String kubun; /* ¾÷¹« ±¸ºĞ [3] */
-    private String sendCnt; /* ¼Û½Å È½¼ö [1] */
-    private String msgNo; /* Àü¹® ¹øÈ£ [6] */
-    private String sendDate; /* ¼Û½Å ÀÏÀÚ [8] */
-    private String sendTime; /* ¼Û½Å ½Ã°£ [6] */
-    private String retCode; /* ÀÀ´ä ÄÚµå [4] */
-    private String sikByulCode; /* ½Äº° ÄÚµå [9] */
-    private String sdsArea; /* SDS ¿µ¿ª [15] */
-    private String compArea; /* ¾÷Ã¼ ¿µ¿ª [11] */
-    private String bankArea; /* ÀºÇà ¿µ¿ª [10] */
+    private String compCode; /* ì€í–‰ë¶€ì—¬ ì—…ì²´ì½”ë“œ [12] */
+    private String bankCode; /* ì€í–‰ ì½”ë“œ [2] */
+    private String msgCode; /* ì „ë¬¸ ì½”ë“œ [4] */
+    private String kubun; /* ì—…ë¬´ êµ¬ë¶„ [3] */
+    private String sendCnt; /* ì†¡ì‹  íšŸìˆ˜ [1] */
+    private String msgNo; /* ì „ë¬¸ ë²ˆí˜¸ [6] */
+    private String sendDate; /* ì†¡ì‹  ì¼ì [8] */
+    private String sendTime; /* ì†¡ì‹  ì‹œê°„ [6] */
+    private String retCode; /* ì‘ë‹µ ì½”ë“œ [4] */
+    private String sikByulCode; /* ì‹ë³„ ì½”ë“œ [9] */
+    private String sdsArea; /* SDS ì˜ì—­ [15] */
+    private String compArea; /* ì—…ì²´ ì˜ì—­ [11] */
+    private String bankArea; /* ì€í–‰ ì˜ì—­ [10] */
 
     public String getTrCode() {
         return trCode;

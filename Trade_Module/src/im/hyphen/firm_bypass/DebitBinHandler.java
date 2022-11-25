@@ -10,7 +10,6 @@ import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
-import im.hyphen.msgVO.HyphenTradeData;
 import im.hyphen.util.*;
 
 import java.security.spec.RSAPublicKeySpec;
@@ -21,8 +20,8 @@ public class DebitBinHandler extends Thread
    public static final byte C_ETX = 0x03;
    public static final int READ_BLOCK_SIZE = 2000;
    public static final int READ_TIMEOUT = 40;
-   
-   private HyphenTradeData htd;
+   private String msg_info[] = new String[10];
+   private InputStream rs_in = null;
    DataInputStream         in         = null;
    MetaEn         hmsg;
    ByteBuffer      buff;
@@ -35,22 +34,22 @@ public class DebitBinHandler extends Thread
    Socket s_cs = null;
 
 
-   public DebitBinHandler(HyphenTradeData htd) throws Exception {
+   public DebitBinHandler(String send_info[], InputStream rs_in) throws Exception {
       this.hmsg            = new MetaEn();
       this.ro              = new Well512();
       this.cmsg          = new MsgEn();
       this.smsg          = new MsgEn();
       this.cmsg.ctype = 'C';
       this.smsg.ctype = 'S';
-      this.htd = htd;
+      this.rs_in = rs_in;
+      System.arraycopy(send_info, 0, this.msg_info, 0, send_info.length);
 
    }
    
    public DataInputStream msgTodata() throws IOException {
-	  StringBuilder sb = new StringBuilder();
-      sb.append(this.htd.getSendMsg());
-      sb.append(this.htd.getSendMsg().length());
-      String send_msg = sb.toString();
+      String send_msg = this.msg_info[8];
+      String msgLen = String.format("%04d", send_msg.length());
+      send_msg = msgLen + send_msg;
       InputStream is = new ByteArrayInputStream(send_msg.getBytes());
       DataInputStream dis = new DataInputStream(is);
 
@@ -66,7 +65,7 @@ public class DebitBinHandler extends Thread
          hmsg.route_type    = "00".getBytes()    ;
          hmsg.enc_type      = "$".getBytes()     ;
          hmsg.m_key_type    = "0".getBytes()     ;
-         DataInputStream bin_in = new DataInputStream(htd.getBin_in());
+         DataInputStream bin_in = new DataInputStream(rs_in);
          DataInputStream msg_in = msgTodata();
 
 
@@ -695,7 +694,7 @@ public class DebitBinHandler extends Thread
       int    rest_len = 0;
       int    read_len = 0;
       byte[] buf = null;
-      byte[] block_buf = null;
+      byte[]    block_buf = null;
       try
       {
          byte[]    msg_buf = ReadMsg(msg_in);

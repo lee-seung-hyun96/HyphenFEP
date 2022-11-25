@@ -1,45 +1,45 @@
 package im.hyphen.msgVO;
 
 public class M3000700  extends SDSHeader{
-    private String sendRequestDate;               /* ¿ÜÈ­¼Û±İÀÇ·ÚÀÏÀÚ*/
-    private String sendRequestSeqNo;              /* ¿ÜÈ­¼Û±İÀÇ·ÚÀü¹®¹øÈ£*/
-    private String customerNo;                    /* °í°´¹øÈ£*/
-    private String mAccount;                      /* Ãâ±İ°èÁÂ¹øÈ£(¼Û±İ¾×)*/
-    private String amt;                           /* ¼Û±İ±İ¾×(¿ÜÈ­±İ¾×) ¼Ò¼öÁ¡ÀÌÇÏ 3ÀÚ¸® Æ÷ÇÔ 12ÀÚ¸® Á¤¼ö, ¼Ò¼öÁ¡ ÀÌÇÏ 3ÀÚ¸®*/
-    private String currency;                      /* ¼Û±İÅëÈ­*/
-    private String sendKubun;                     /* ¼Û±İ±¸ºĞ*/
-    private String senderName;                    /* ¼Û±İÀÎ¸í*/
-    private String receiverName;                  /* ¼öÃëÀÎ¸í*/
-    private String receiverAccount;               /* ¼öÃëÀÎ°èÁÂ¹øÈ£*/
-    private String receiverAddress;               /* ¼öÃëÀÎÁÖ¼Ò*/
-    private String receiverMomo;                  /* ¼öÃëÀÎ¾Õ Áö½Ã»çÇ×*/
-    private String countryCode;                   /* »ó´ë±¹ ÄÚµå*/
-    private String hostileCountry;                /* Àû¼º±¹°¡¾Õ ¼Û±İ 'Y'*/
-    private String receiverBicCode;               /* ¼öÃëÀºÇà ÄÚµå, ¼öÃëÀÎ ¾Õ ¼Û±İ¾×À» Áö±ŞÇÑ ÀºÇà*/
-    private String receiverBankName;              /* ¼öÃëÀºÇà ÀºÇà¸í ¹× ÁÖ¼Ò*/
-    private String msgFormat;                     /* ¼Û±İ Àü¹®ÇüÅÂ 1 mt100 2 mt100 & mt202*/
-    private String settlementBankCode;            /* °áÁ¦ÀºÇà bicÄÚµå */
-    private String settlementBanName;             /* °áÁ¦ÀºÇà*/
-    private String routeBankCode1;                /* ¼Û±İ°æÀ¯ÀºÇà1 ÄÚµå*/
-    private String routeBankName1;                /* ¼Û±İ°æÀ¯ÀºÇà1*/
-    private String routeBankCode2;                /* ¼Û±İ°æÀ¯ÀºÇà2 ÄÚµå*/
-    private String routeBankName2;                /* ¼Û±İ°æÀ¯ÀºÇà2*/
-    private String routeBankCode3;                /* ¼Û±İ°æÀ¯ÀºÇà3 ÄÚµå*/
-    private String routeBankName3;                /* ¼Û±İ°æÀ¯ÀºÇà3*/
-    private String feeChargeAccountNo;            /* ¼ö¼ö·á ÀÎÃâ°èÁÂ¹øÈ£*/
-    private String feePayer;                      /* ÇØ¿ÜÀºÇà ¼ö¼ö·á ºÎ´ãÀÚ 1 : ¼öÃëÀÎºÎ´ã, 2¼Û±İÀÎºÎ´ã*/
-    private String whichFeeAccount;               /* ÇØ¿ÜÀºÇà ¼ö¼ö·á ÀÎÃâ°èÁÂ ÁöÁ¤ 1 : Ãâ±İ°èÁÂ, 2 : ¼ö¼ö·á ÀÎÃâ°èÁÂ*/
-    private String amtForTheirCurrency;           /* ¼Û±İ¾×(Ãâ±İ°èÁÂ ÅëÈ­±âÁØ)*/
-    private String feeCurRate;                    /* ¼Û±İ¾× ÀÎÃâ½Ã Àû¿ë È¯À²*/
-    private String feeAmtForLocal;                /* ¼Û±İ¼ö¼ö·á(±¹³»)*/
-    private String feeCurRateForLocal;            /* ¼Û±İ¼ö¼ö·á ÀÎÃâ Àû¿ëÈ¯À²(±¹³»)*/
-    private String feeToForeignBank;               /* ÇØ¿ÜÀºÇà¾Õ Áö±Ş¼ö¼ö·á*/
-    private String currencyRateToForeignBank;      /* ÇØ¿ÜÀºÇà ¼ö¼ö·á ÀÎÃâ Àû¿ë È¯À²*/
-    private String payCauseCode;                  /* Áö±Ş»çÀ¯ÄÚµå*/
-    private String payCause;                      /* Áö±Ş»çÀ¯*/
-    private String transactionNo;                 /* °Å·¡¹øÈ£*/
+    private String sendRequestDate;               /* ì™¸í™”ì†¡ê¸ˆì˜ë¢°ì¼ì*/
+    private String sendRequestSeqNo;              /* ì™¸í™”ì†¡ê¸ˆì˜ë¢°ì „ë¬¸ë²ˆí˜¸*/
+    private String customerNo;                    /* ê³ ê°ë²ˆí˜¸*/
+    private String mAccount;                      /* ì¶œê¸ˆê³„ì¢Œë²ˆí˜¸(ì†¡ê¸ˆì•¡)*/
+    private String amt;                           /* ì†¡ê¸ˆê¸ˆì•¡(ì™¸í™”ê¸ˆì•¡) ì†Œìˆ˜ì ì´í•˜ 3ìë¦¬ í¬í•¨ 12ìë¦¬ ì •ìˆ˜, ì†Œìˆ˜ì  ì´í•˜ 3ìë¦¬*/
+    private String currency;                      /* ì†¡ê¸ˆí†µí™”*/
+    private String sendKubun;                     /* ì†¡ê¸ˆêµ¬ë¶„*/
+    private String senderName;                    /* ì†¡ê¸ˆì¸ëª…*/
+    private String receiverName;                  /* ìˆ˜ì·¨ì¸ëª…*/
+    private String receiverAccount;               /* ìˆ˜ì·¨ì¸ê³„ì¢Œë²ˆí˜¸*/
+    private String receiverAddress;               /* ìˆ˜ì·¨ì¸ì£¼ì†Œ*/
+    private String receiverMomo;                  /* ìˆ˜ì·¨ì¸ì• ì§€ì‹œì‚¬í•­*/
+    private String countryCode;                   /* ìƒëŒ€êµ­ ì½”ë“œ*/
+    private String hostileCountry;                /* ì ì„±êµ­ê°€ì• ì†¡ê¸ˆ 'Y'*/
+    private String receiverBicCode;               /* ìˆ˜ì·¨ì€í–‰ ì½”ë“œ, ìˆ˜ì·¨ì¸ ì• ì†¡ê¸ˆì•¡ì„ ì§€ê¸‰í•œ ì€í–‰*/
+    private String receiverBankName;              /* ìˆ˜ì·¨ì€í–‰ ì€í–‰ëª… ë° ì£¼ì†Œ*/
+    private String msgFormat;                     /* ì†¡ê¸ˆ ì „ë¬¸í˜•íƒœ 1 mt100 2 mt100 & mt202*/
+    private String settlementBankCode;            /* ê²°ì œì€í–‰ bicì½”ë“œ */
+    private String settlementBanName;             /* ê²°ì œì€í–‰*/
+    private String routeBankCode1;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰1 ì½”ë“œ*/
+    private String routeBankName1;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰1*/
+    private String routeBankCode2;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰2 ì½”ë“œ*/
+    private String routeBankName2;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰2*/
+    private String routeBankCode3;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰3 ì½”ë“œ*/
+    private String routeBankName3;                /* ì†¡ê¸ˆê²½ìœ ì€í–‰3*/
+    private String feeChargeAccountNo;            /* ìˆ˜ìˆ˜ë£Œ ì¸ì¶œê³„ì¢Œë²ˆí˜¸*/
+    private String feePayer;                      /* í•´ì™¸ì€í–‰ ìˆ˜ìˆ˜ë£Œ ë¶€ë‹´ì 1 : ìˆ˜ì·¨ì¸ë¶€ë‹´, 2ì†¡ê¸ˆì¸ë¶€ë‹´*/
+    private String whichFeeAccount;               /* í•´ì™¸ì€í–‰ ìˆ˜ìˆ˜ë£Œ ì¸ì¶œê³„ì¢Œ ì§€ì • 1 : ì¶œê¸ˆê³„ì¢Œ, 2 : ìˆ˜ìˆ˜ë£Œ ì¸ì¶œê³„ì¢Œ*/
+    private String amtForTheirCurrency;           /* ì†¡ê¸ˆì•¡(ì¶œê¸ˆê³„ì¢Œ í†µí™”ê¸°ì¤€)*/
+    private String feeCurRate;                    /* ì†¡ê¸ˆì•¡ ì¸ì¶œì‹œ ì ìš© í™˜ìœ¨*/
+    private String feeAmtForLocal;                /* ì†¡ê¸ˆìˆ˜ìˆ˜ë£Œ(êµ­ë‚´)*/
+    private String feeCurRateForLocal;            /* ì†¡ê¸ˆìˆ˜ìˆ˜ë£Œ ì¸ì¶œ ì ìš©í™˜ìœ¨(êµ­ë‚´)*/
+    private String feeToForeignBank;               /* í•´ì™¸ì€í–‰ì• ì§€ê¸‰ìˆ˜ìˆ˜ë£Œ*/
+    private String currencyRateToForeignBank;      /* í•´ì™¸ì€í–‰ ìˆ˜ìˆ˜ë£Œ ì¸ì¶œ ì ìš© í™˜ìœ¨*/
+    private String payCauseCode;                  /* ì§€ê¸‰ì‚¬ìœ ì½”ë“œ*/
+    private String payCause;                      /* ì§€ê¸‰ì‚¬ìœ */
+    private String transactionNo;                 /* ê±°ë˜ë²ˆí˜¸*/
     private String valueDate;                     /* */
-    private String reserved;                      /* ¿¹ºñ*/
+    private String reserved;                      /* ì˜ˆë¹„*/
 
     public String getSendRequestDate() {
         return sendRequestDate;

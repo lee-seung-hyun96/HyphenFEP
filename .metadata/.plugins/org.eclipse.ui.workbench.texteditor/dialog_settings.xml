@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value=""/>
+		<item key="selection" value="ss."/>
 		<item key="wrap" value="false"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="log"/>
-			<item value="init"/>
-			<item value="curr_date"/>
-			<item value="save"/>
-			<item value="save\"/>
-			<item value="savelog"/>
-			<item value="LUtil"/>
-			<item value="`"/>
-			<item value="getSendData"/>
-			<item value="SELECT"/>
-			<item value="select"/>
-			<item value="0600"/>
-			<item value="0600601"/>
-			<item value="msg_info[9]"/>
-			<item value="Select_SendData"/>
+			<item value="ss."/>
+			<item value="ss.clo"/>
+			<item value="ks"/>
+			<item value="cms_encrypt"/>
+			<item value="String QRY = &quot;SELECT REQ_DATE"/>
+			<item value="s_cs"/>
+			<item value="this.s_cs"/>
+			<item value="storeMsg"/>
+			<item value="bin_in"/>
+			<item value="insert"/>
+			<item value="saf :"/>
+			<item value="saf"/>
+			<item value="saf:"/>
+			<item value="GetSvr"/>
+			<item value="getServ"/>
 		</list>
 		<list key="replacehistory">
-			<item value="lutil"/>
 			<item value="BankEncSocket"/>
 			<item value="SUtil.b2s"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item key="DIALOG_X_ORIGIN" value="-2391"/>
-		<item key="DIALOG_Y_ORIGIN" value="464"/>
+		<item key="DIALOG_Y_ORIGIN" value="606"/>
 		<item key="DIALOG_WIDTH" value="340"/>
 		<item key="DIALOG_HEIGHT" value="454"/>
 		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
