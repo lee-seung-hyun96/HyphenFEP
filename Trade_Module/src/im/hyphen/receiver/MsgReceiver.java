@@ -1,9 +1,8 @@
 package im.hyphen.receiver;
 
-import im.hyphen.util.CUtil;
-import im.hyphen.util.DUtil;
-import im.hyphen.util.EUtil;
-import im.hyphen.util.SUtil;
+import im.hyphen.msgVO.M0200300;
+import im.hyphen.msgVO.M0400100;
+import im.hyphen.util.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -141,6 +140,9 @@ public class MsgReceiver extends Thread{
 
     public byte[] parseMsg(byte[] byte_data) throws Exception
     {
+        NotiMsgParser notiMsgParser = new NotiMsgParser();
+
+
         boolean     ret = false;
         int         ipos = 0;
         HashMap<String,String> dHash = new HashMap<String,String>();
@@ -187,44 +189,11 @@ public class MsgReceiver extends Thread{
         else if (byte_data[19] == '0' && byte_data[20] == '2' && byte_data[21] == '0' && byte_data[22] == '0')
         {
 
-            String  tran_code       = SUtil.toHanX(byte_data, ipos, 9   ); ipos +=  9 ;
-            String  comp_code       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  bank_code       = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  mess_code       = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  mess_diff       = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  tran_cnt        = SUtil.toHanX(byte_data, ipos, 1   ); ipos +=  1 ;
-            String  seq_no          = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  tran_date       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  tran_time       = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  stan_resp_code  = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  bank_resp_code  = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  inqu_date       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  inqu_no         = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  bank_seq_no     = SUtil.toHanX(byte_data, ipos, 15  ); ipos +=  15;
-            String  bank_code_3     = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  filler_1        = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  corp_acct_no     = SUtil.toHanX(byte_data, ipos, 15  ); ipos +=  15;
-            String  comp_cnt        = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  deal_sele       = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  in_bank_code    = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  total_amt       = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  balance         = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  bran_code       = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  cust_name       = SUtil.toHanX(byte_data, ipos, 14  ); ipos +=  14;
-            String  check_no        = SUtil.toHanX(byte_data, ipos, 10  ); ipos +=  10;
-            String  cash            = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  out_bank_check  = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  etc_check       = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  vr_acct_no       = SUtil.toHanX(byte_data, ipos, 16  ); ipos +=  16;
-            String  deal_date       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  deal_time       = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  serial_no       = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  in_bank_code_3  = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  bran_code_3     = SUtil.toHanX(byte_data, ipos, 7   ); ipos +=  7 ;
-            String  filler_2        = SUtil.toHanX(byte_data, ipos, 38  ); ipos +=  38;
+            M0200300 m0200300 = notiMsgParser.m0200300(byte_data);
+
 
             String  error_code = "9999";
-            ret = DUtil.insert0200_300(tran_code,comp_code,bank_code,mess_code,mess_diff, tran_cnt,seq_no,tran_date,tran_time,stan_resp_code,bank_resp_code,inqu_date,inqu_no,bank_seq_no,bank_code_3,filler_1,corp_acct_no,comp_cnt,deal_sele,in_bank_code,total_amt,balance,bran_code,cust_name,check_no,cash,out_bank_check, etc_check,vr_acct_no,deal_date,deal_time,serial_no,in_bank_code_3,bran_code_3,filler_2);
+            ret = DUtil.insert0200_300(m0200300);
 
             byte[] read_buf = (byte[])byte_data.clone();
 
@@ -241,38 +210,10 @@ public class MsgReceiver extends Thread{
         }
         else if (byte_data[19] == '0' && byte_data[20] == '4' && byte_data[21] == '0' && byte_data[22] == '0')
         {
-            String  tran_code       = SUtil.toHanX(byte_data, ipos, 9   ); ipos +=  9 ;
-            String  comp_code       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  bank_code       = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  mess_code       = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  mess_diff       = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  tran_cnt        = SUtil.toHanX(byte_data, ipos, 1   ); ipos +=  1 ;
-            String  seq_no          = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  tran_date       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  tran_time       = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  stan_resp_code  = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  bank_resp_code  = SUtil.toHanX(byte_data, ipos, 4   ); ipos +=  4 ;
-            String  inqu_date       = SUtil.toHanX(byte_data, ipos, 8   ); ipos +=  8 ;
-            String  inqu_no         = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  bank_seq_no     = SUtil.toHanX(byte_data, ipos, 15  ); ipos +=  15;
-            String  bank_code_3     = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  filler_1        = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  org_seq_no      = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  out_account_no  = SUtil.toHanX(byte_data, ipos, 15  ); ipos +=  15;
-            String  in_account_no   = SUtil.toHanX(byte_data, ipos, 15  ); ipos +=  15;
-            String  in_money        = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  in_bank_code    = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  nor_money       = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  abnor_money     = SUtil.toHanX(byte_data, ipos, 13  ); ipos +=  13;
-            String  div_proc_cnt    = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  div_proc_no     = SUtil.toHanX(byte_data, ipos, 2   ); ipos +=  2 ;
-            String  ta_no           = SUtil.toHanX(byte_data, ipos, 6   ); ipos +=  6 ;
-            String  not_in_amt      = SUtil.toHanX(byte_data, ipos, 9   ); ipos +=  9 ;
-            String  err_code        = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  in_bank_code_3  = SUtil.toHanX(byte_data, ipos, 3   ); ipos +=  3 ;
-            String  filler_2        = SUtil.toHanX(byte_data, ipos, 98  ); ipos +=  98;
+            M0400100 m0400100 = notiMsgParser.m0400100(byte_data);
 
-            ret = DUtil.insert0400_100(tran_code, comp_code, bank_code, mess_code, mess_diff, tran_cnt, seq_no, tran_date, tran_time, stan_resp_code, bank_resp_code, inqu_date, inqu_no, bank_seq_no, bank_code_3, filler_1, org_seq_no, out_account_no, in_account_no, in_money, in_bank_code, nor_money, abnor_money, div_proc_cnt, div_proc_no, ta_no, not_in_amt, err_code, in_bank_code_3, filler_2);
+
+            ret = false;//DUtil.insert0400_100(tran_code, comp_code, bank_code, mess_code, mess_diff, tran_cnt, seq_no, tran_date, tran_time, stan_resp_code, bank_resp_code, inqu_date, inqu_no, bank_seq_no, bank_code_3, filler_1, org_seq_no, out_account_no, in_account_no, in_money, in_bank_code, nor_money, abnor_money, div_proc_cnt, div_proc_no, ta_no, not_in_amt, err_code, in_bank_code_3, filler_2);
 
             String  error_code = "9999";
             byte[] read_buf = (byte[])byte_data.clone();
