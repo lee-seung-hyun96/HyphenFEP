@@ -5,16 +5,17 @@ import java.io.*;
 import java.net.*;
 
 import im.hyphen.crypto.HyphenEncSocket;
-import im.hyphen.msgVO.HyphenTradeData;
+
 import im.hyphen.util.*;
 
-public class FirmGateHandler
+public class FirmGateHandler extends Thread
 {
+	private String msg_info[] = new String[10];
 	Socket socket = null;
-	HyphenTradeData htd = null;
-	public FirmGateHandler(HyphenTradeData htd)
+
+	public FirmGateHandler(String[] send_info)
 	{	
-		this.htd = htd;
+		System.arraycopy(send_info, 0, this.msg_info, 0, send_info.length);
 	}
 
 	public void run()
@@ -25,8 +26,10 @@ public class FirmGateHandler
 		String              recv_msg = null;
 		int                 msg_len = 0;
 		try {
-			this.htd.setErrCode("9999");
-			send_msg = htd.getSendMsg();
+			this.msg_info[0] = "9999";
+			this.msg_info[9] = " ";
+			send_msg = this.msg_info[8];
+			
 			//Socket Info and conncet
 			String ksnet_ip = CUtil.get("KSNET_IP").trim();
 			int ksnet_port = Integer.parseInt(CUtil.get("KSNET_PORT"));
@@ -38,7 +41,7 @@ public class FirmGateHandler
 			if(socket == null) {
 				LUtil.println("CLIENT->KSNET=[Socket Connect Error]");
 			}
-			if (htd.getSvcType().equals("KEB"))
+			if (msg_info[2].equals("KEB"))
 				msg_len = 2000;  /* KEB 2000bytes */
 			else
 				msg_len = 300;  /* 300bytes */
@@ -91,22 +94,22 @@ public class FirmGateHandler
 
 			recv_msg = SUtil.ConvB2S(rpy_buf, 0, msg_len, "ksc5601");
 
-			this.htd.setErrCode("0000");
-			this.htd.setRecvMsg(recv_msg);
+			this.msg_info[0] = "0000";
+			this.msg_info[9] = recv_msg;
 
-			DUtil.Update_RecvData(this.htd);   /* update recv_msg  */
+			DUtil.Update_RecvData(this.msg_info);   /* update recv_msg  */
 
 		}catch(SocketTimeoutException e) {
-			this.htd.setErrCode("TIME");
-			DUtil.Update_RecvData(this.htd);
+			this.msg_info[0] = "TIME";
+			DUtil.Update_RecvData(this.msg_info);
 			LUtil.println("ERROR:"+e.getMessage()+" ["+send_msg+"]");
 		}catch(ConnectException e) {
-			this.htd.setErrCode("CONE"); 
-			DUtil.Update_RecvData(this.htd);
+			this.msg_info[0] = "CONE";
+			DUtil.Update_RecvData(this.msg_info);
 			LUtil.println("ERROR:"+e.getMessage()+" ["+send_msg+"]");
 		}catch (Exception e) {
-			this.htd.setErrCode("9999");
-			DUtil.Update_RecvData(this.htd);
+			this.msg_info[0] = "9999";
+			DUtil.Update_RecvData(this.msg_info);
 			LUtil.println("ERROR:"+e.getMessage()+" ["+send_msg+"]");
 		}finally {
 			try{if (serv_in != null) serv_in.close();}catch(Exception e){};

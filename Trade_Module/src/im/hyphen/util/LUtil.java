@@ -82,7 +82,7 @@ public class LUtil
 
 		File openFile = new File(LOG_FILE);
 		PrintStream out = null;
-		
+
 		try{
 			if(openFile.exists()){
 				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
