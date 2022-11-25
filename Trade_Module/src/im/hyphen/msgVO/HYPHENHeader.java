@@ -7,9 +7,8 @@ public class HYPHENHeader {
     private String tranCode; /*9자리 식별코드*/
     private String compCode; /*8자리 업체코드*/
     private String bankCode2; /*2자리 은행코드*/
-    private String msgCode; /*4자리 전문코드*/
-
-    private String msgDiff; /*3자리 업무코드*/
+    private String msgCode; /*4자리 메시지코드*/
+    private String msgDiff; /*3자리 업무구분코드*/
     private String transCnt; /*1자리 송신횟수*/
     private String seqNo; /*6자리 전문번호*/
     private String sendDate; /*8자리 전송일자*/
@@ -29,7 +28,8 @@ public class HYPHENHeader {
         this.tranCode = SUtil.createBlankPadding(9);
         this.compCode = compCode;
         this.bankCode2 = bankCode.substring(1);
-        this.msgCode = msgCode;
+        this.msgCode = msgCode.substring(0,3);
+        this.msgDiff= msgCode.substring(4);
         this.transCnt = "1";
         this.sendDate = SUtil.getDate();
         this.sendTime = SUtil.getTime();
@@ -40,7 +40,6 @@ public class HYPHENHeader {
         this.bankSeqNo = SUtil.createBlankPadding(15);
         this.bankCode =  bankCode;
         this.reserved = SUtil.createBlankPadding(13);
-
     }
 
     public String getTranCode() {
@@ -59,6 +58,9 @@ public class HYPHENHeader {
         return msgCode;
     }
 
+    public String getMsgDiff() {
+        return msgDiff;
+    }
     public String getTransCnt() {
         return transCnt;
     }
@@ -103,14 +105,6 @@ public class HYPHENHeader {
         return reserved;
     }
 
-    public String getMsgDiff() {
-        return msgDiff;
-    }
-
-    public void setMsgDiff(String msgDiff) {
-        this.msgDiff = msgDiff;
-    }
-
     public void setTranCode(String tranCode) {
         this.tranCode = tranCode;
     }
@@ -125,6 +119,10 @@ public class HYPHENHeader {
 
     public void setMsgCode(String msgCode) {
         this.msgCode = msgCode;
+    }
+
+    public void setMsgDiff(String msgDiff) {
+        this.msgDiff = msgDiff;
     }
 
     public void setTransCnt(String transCnt) {
@@ -173,21 +171,23 @@ public class HYPHENHeader {
 
     @Override
     public String toString() {
-        return 	  tranCode
-                + compCode
-                + bankCode2
-                + msgCode
-                + transCnt
-                + seqNo
-                + sendDate
-                + sendTime
-                + respCode
-                + bankRespCode
-                + inqDate
-                + inqNo
-                + bankSeqNo
-                + bankCode
-                + reserved;
+        StringBuffer sb = new StringBuffer();
+        return sb.append(tranCode)
+                 .append(compCode)
+                 .append(bankCode2)
+                 .append(msgCode)
+                 .append(transCnt)
+                 .append(seqNo)
+                 .append(sendDate)
+                 .append(sendTime)
+                 .append(respCode)
+                 .append(bankRespCode)
+                 .append(inqDate)
+                 .append(inqNo)
+                 .append(bankSeqNo)
+                 .append(bankCode)
+                 .append(reserved)
+                 .toString();
     }
 
 }
