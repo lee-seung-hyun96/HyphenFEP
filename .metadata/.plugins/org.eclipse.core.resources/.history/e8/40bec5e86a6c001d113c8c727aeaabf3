@@ -1,0 +1,25 @@
+package im.hyphen.util;
+
+public class LUtil
+{
+	public static void println(Object pstr)
+	{
+		String curr_date = SUtil.getCurrDate();
+		LogTimer.sbSnd.append("[");
+		LogTimer.sbSnd.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
+		LogTimer.sbSnd.append("]" );
+		LogTimer.sbSnd.append(pstr);
+	}
+
+	public static void println(String prefix, Object pstr)
+	{
+		String curr_date = SUtil.getCurrDate();
+		LogTimer.sbSnd.append("[");
+		LogTimer.sbSnd.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
+		LogTimer.sbSnd.append("]" );
+		LogTimer.sbSnd.append(pstr);
+
+	}
+
+
+}

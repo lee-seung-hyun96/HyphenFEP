@@ -20,7 +20,7 @@ public class HypConnectionPool implements ConnectionPool {
        for(int i=0; i < INITIAL_POOL_SIZE; i++) {
             pool.add(createConnection(url, user, password));
        }
-        return new HypConnectionPool(url, user, password, pool);
+        return new HypConnectionPool();
     }
 
     @Override
@@ -45,4 +45,22 @@ public class HypConnectionPool implements ConnectionPool {
     private int getSize() {
         return connectionPool.size() + usedConnections.size();
     }
+
+	@Override
+	public String getUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPwd() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
