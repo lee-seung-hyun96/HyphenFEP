@@ -1,5 +1,8 @@
 package im.hyphen.util;
 
+import im.hyphen.msgVO.M0200300;
+import im.hyphen.msgVO.M0400100;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -263,7 +266,45 @@ public class DUtil
 		return rHash;
 	}
 
-	
+
+	public static boolean insert0200_300(M0200300 m0200300){
+		return insert0200_300(m0200300.getTranCode(),
+				m0200300.getCompCode(),
+				m0200300.getBankCode2(),
+				m0200300.getMsgCode(),
+				m0200300.getMsgDiff(),
+				m0200300.getTransCnt(),
+				m0200300.getSeqNo(),
+				m0200300.getSendDate(),
+				m0200300.getSendTime(),
+				m0200300.getRespCode(),
+				m0200300.getBankRespCode(),
+				m0200300.getInqDate(),
+				m0200300.getInqNo(),
+				m0200300.getBankSeqNo(),
+				m0200300.getBankCode(),
+				m0200300.getReserved(),
+				m0200300.getCorp_acct_no(),
+				m0200300.getComp_cnt(),
+				m0200300.getDeal_sele(),
+				m0200300.getIn_bank_code(),
+				m0200300.getTotal_amt(),
+				m0200300.getBalance(),
+				m0200300.getBran_code(),
+				m0200300.getCust_name(),
+				m0200300.getCheck_no(),
+				m0200300.getCash(),
+				m0200300.getOut_bank_check(),
+				m0200300.getEtc_check(),
+				m0200300.getVr_acct_no(),
+				m0200300.getDeal_date(),
+				m0200300.getDeal_time(),
+				m0200300.getSerial_no(),
+				m0200300.getIn_bank_code_3(),
+				m0200300.getBran_code_3(),
+				m0200300.getFiller_2());
+
+	}
 	public static boolean insert0200_300(String tran_code,String comp_code,String bank_code,String mess_code,String mess_diff,String tran_cnt,String seq_no,String tran_date,String tran_time,String stan_resp_code,String bank_resp_code,String inqu_date,String inqu_no,String bank_seq_no,String bank_code_3,String filler_1,String corp_acct_no,String comp_cnt,String deal_sele,String in_bank_code,String total_amt,String balance,String bran_code,String cust_name,String check_no,String cash,String out_bank_check,String etc_check,String vr_acct_no,String deal_date,String deal_time,String serial_no,String in_bank_code_3,String bran_code_3,String filler_2)
 	{
 		Connection        con   = null;
@@ -364,6 +405,42 @@ public class DUtil
 		}
 		return false;
 	}
+
+	public static boolean insert0400_100(M0400100 m0400100){
+		return insert0400_100(m0400100.getTranCode(),
+				m0400100.getCompCode(),
+				m0400100.getBankCode2(),
+				m0400100.getMsgCode(),
+				m0400100.getMsgDiff(),
+				m0400100.getTransCnt(),
+				m0400100.getSeqNo(),
+				m0400100.getSendDate(),
+				m0400100.getSendTime(),
+				m0400100.getRespCode(),
+				m0400100.getBankRespCode(),
+				m0400100.getInqDate(),
+				m0400100.getInqNo(),
+				m0400100.getBankSeqNo(),
+				m0400100.getBankCode(),
+				m0400100.getReserved(),
+				m0400100.getOrg_seq_no(),
+				m0400100.getOut_account_no(),
+				m0400100.getIn_account_no(),
+				m0400100.getIn_money(),
+				m0400100.getIn_bank_code(),
+				m0400100.getNor_money(),
+				m0400100.getAbnor_money(),
+				m0400100.getDiv_proc_cnt(),
+				m0400100.getDiv_proc_no(),
+				m0400100.getTa_no(),
+				m0400100.getNot_in_amt(),
+				m0400100.getErr_code(),
+				m0400100.getIn_bank_code_3(),
+				m0400100.getFiller_2());
+
+	}
+
+
 	public static boolean insert0400_100(String tran_code, String comp_code, String bank_code, String mess_code, String mess_diff, String tran_cnt, String seq_no, String tran_date, String tran_time, String stan_resp_code, String bank_resp_code, String inqu_date, String inqu_no, String bank_seq_no, String bank_code_3, String filler_1, String org_seq_no, String out_account_no, String in_account_no, String in_money, String in_bank_code, String nor_money, String abnor_money, String div_proc_cnt, String div_proc_no, String ta_no, String not_in_amt, String err_code, String in_bank_code_3, String filler_2)
 	{
 		Connection          con     = null;

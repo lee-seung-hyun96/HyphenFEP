@@ -69,7 +69,7 @@ public class M3000700  extends SDSHeader{
         return mAccount;
     }
 
-    public void setmAccount(String mAccount) {
+    public void setMAccount(String mAccount) {
         this.mAccount = mAccount;
     }
 

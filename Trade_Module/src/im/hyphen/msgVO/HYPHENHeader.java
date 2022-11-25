@@ -7,15 +7,17 @@ public class HYPHENHeader {
     private String tranCode; /*9자리 식별코드*/
     private String compCode; /*8자리 업체코드*/
     private String bankCode2; /*2자리 은행코드*/
-    private String msgCode; /*7자리 전문코드*/
+    private String msgCode; /*4자리 전문코드*/
+
+    private String msgDiff; /*3자리 업무코드*/
     private String transCnt; /*1자리 송신횟수*/
     private String seqNo; /*6자리 전문번호*/
     private String sendDate; /*8자리 전송일자*/
     private String sendTime; /*6자리 전송시간*/
     private String respCode; /*4자리 응답코드*/
     private String bankRespCode; /*4자리 은행응답코드*/
-    private String reqDate; /*8자리 조회일자*/
-    private String reqNo; /*6자리 조회번호*/
+    private String inqDate; /*8자리 조회일자*/
+    private String inqNo; /*6자리 조회번호*/
     private String bankSeqNo; /*15자리 은행전문번호*/
     private String bankCode; /*3자리 은행코드*/
     private String reserved; /*13자리 예비*/
@@ -33,8 +35,8 @@ public class HYPHENHeader {
         this.sendTime = SUtil.getTime();
         this.respCode = SUtil.createBlankPadding(4);
         this.bankRespCode = SUtil.createBlankPadding(4);
-        this.reqDate = SUtil.createBlankPadding(8);
-        this.reqNo = SUtil.createBlankPadding(6);
+        this.inqDate = SUtil.createBlankPadding(8);
+        this.inqNo = SUtil.createBlankPadding(6);
         this.bankSeqNo = SUtil.createBlankPadding(15);
         this.bankCode =  bankCode;
         this.reserved = SUtil.createBlankPadding(13);
@@ -81,12 +83,12 @@ public class HYPHENHeader {
         return bankRespCode;
     }
 
-    public String getReqDate() {
-        return reqDate;
+    public String getInqDate() {
+        return inqDate;
     }
 
-    public String getReqNo() {
-        return reqNo;
+    public String getInqNo() {
+        return inqNo;
     }
 
     public String getBankSeqNo() {
@@ -99,6 +101,14 @@ public class HYPHENHeader {
 
     public String getReserved() {
         return reserved;
+    }
+
+    public String getMsgDiff() {
+        return msgDiff;
+    }
+
+    public void setMsgDiff(String msgDiff) {
+        this.msgDiff = msgDiff;
     }
 
     public void setTranCode(String tranCode) {
@@ -141,12 +151,12 @@ public class HYPHENHeader {
         this.bankRespCode = bankRespCode;
     }
 
-    public void setReqDate(String reqDate) {
-        this.reqDate = reqDate;
+    public void setInqDate(String inqDate) {
+        this.inqDate = inqDate;
     }
 
-    public void setReqNo(String reqNo) {
-        this.reqNo = reqNo;
+    public void setInqNo(String inqNo) {
+        this.inqNo = inqNo;
     }
 
     public void setBankSeqNo(String bankSeqNo) {
@@ -173,8 +183,8 @@ public class HYPHENHeader {
                 + sendTime
                 + respCode
                 + bankRespCode
-                + reqDate
-                + reqNo
+                + inqDate
+                + inqNo
                 + bankSeqNo
                 + bankCode
                 + reserved;
