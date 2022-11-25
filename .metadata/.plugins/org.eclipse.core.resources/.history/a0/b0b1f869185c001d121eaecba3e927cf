@@ -1,0 +1,10 @@
+package im.hyphen.firm_bypass;
+
+import java.text.SimpleDateFormat;
+
+public class TestData {
+	static String RequestDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
+	final static String firmTest =  "         KONEPS01  08008001900002"+ RequestDate + "                                     089                                                                                                                                                                                                                     ";
+
+
+}

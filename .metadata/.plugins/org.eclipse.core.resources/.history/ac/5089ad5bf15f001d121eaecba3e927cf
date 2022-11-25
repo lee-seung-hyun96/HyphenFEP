@@ -1,0 +1,5 @@
+package im.hyphen.util;
+
+public class CopyInputStream {
+
+}
