@@ -5,10 +5,10 @@ import im.hyphen.receiver.MsgReceiver;
 import im.hyphen.sender.MsgSender;
 
 public class FirmBypass{
-//...........................
+
 
 	public static void main(String[] args) throws Exception {
-		//		CUtil.setConfig(args[0]); 
+		//		CUtil.setConfig(args[0]);
 		String path = System.getProperty("user.dir") + "\\conf\\config.ini";
 //		String path = System.getProperty("user.dir") + "\\Trade_Module\\conf\\config.ini";
 		System.out.println(path);
