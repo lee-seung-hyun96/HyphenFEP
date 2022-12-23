@@ -1,3 +1,0 @@
-INDEX VERSION 1.131+C:\stKim\Transaction_v1.0\.metadata\.plugins\org.eclipse.jdt.core
-2461018666.index
-401447720.index
