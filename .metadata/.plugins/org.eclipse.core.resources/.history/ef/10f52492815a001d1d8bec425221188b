@@ -1,0 +1,50 @@
+package ksnet.fpeg;
+
+import java.io.*;
+import java.util.*;
+
+public class LUtil
+{
+    static final String LOG_HOME_CONFIG  = "fpeg.log.home";
+    static final String LOG_LEVEL_CONFIG = "fpeg.log.level";
+
+    static String   SS_LOG_DIR      = null;
+    static int      SI_LOG_LEVEL    = 0;
+    public static final int LV_ALL          = 0;// all   : 모든 정보를 디버그하는데 로그
+    public static final int LV_DEBUG        = 1;// debug : 개발단계에서만 사용하는 로그
+    public static final int LV_CHECK        = 2;// check : 일상적인 수준에서 사용하는 로그
+    public static final int LV_WARN         = 3;// warn  : 일반적으로 발생할 수 있는 예외상황에 대한 로그
+    public static final int LV_ERROR        = 4;// error : 발생해서는 안되는 크리티컬한 수준의 예외에 대한 로그
+
+//    public static void eprintln(Object pstr)
+//    {
+//        aprintln(0, "err", pstr);
+//    }
+//
+//    public static void dprintln(Object pstr)
+//    {
+//        aprintln(LV_DEBUG, "out", pstr);
+//    }
+//
+//    public static void oprintln(Object pstr)
+//    {
+//        aprintln(0, "out", pstr);
+//    }
+//
+//    public static void println(Object pstr)
+//    {
+//        aprintln(0, "out", pstr);
+//    }
+//
+//    public static void eprintln(int log_level, Object pstr)
+//    {
+//        aprintln(log_level, "err", pstr);
+//    }
+//
+//    public static void oprintln(int log_level, Object pstr)
+//    {
+//        aprintln(log_level, "out", pstr);
+//    }
+
+ 
+}
