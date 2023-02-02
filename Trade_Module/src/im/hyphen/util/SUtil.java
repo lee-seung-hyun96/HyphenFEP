@@ -112,7 +112,6 @@ public class SUtil
 		{
 			tokenArr = new String[1];
 			tokenArr[0] = srcStr;
-
 			return tokenArr;
 		}
 
@@ -235,7 +234,7 @@ public class SUtil
 		else if (SUtil.toHan(msg, 0, 9).equals("KSNETVR  ")) return "4000"; //VR
 		else if (SUtil.toHan(msg, 9, 3).equals("FCS") && SUtil.toHan(msg, 19, 7).equals("0600400") ) return "5000"; // FCS
 		else if (SUtil.toHan(msg, 0, 9).equals("KSFC     ")|| SUtil.toHan(msg, 17, 4).equals("    ")) return "3000"; //SDS EBOND
-		else if (SUtil.toHan(msg, 0, 9).equals("HYPHEN  ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "6000"; //KSBPAY, KSDEBIT
+		else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "6000"; //KSBPAY, KSDEBIT
 		else    return "1000";  //WON
 	}
 	public static String GetSvcName(byte[] msg)
@@ -247,16 +246,7 @@ public class SUtil
     else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")||SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return "PAY"; //KSBPAY,KSDEBIT
 		else    return "WON";  //WON
 	}
-	 public static int GetSvcPort(byte[] msg)
-        {
-                if(msg.length == 2000) return 9222;   //KEB
-                else if (SUtil.toHan(msg, 0, 9).equals("KSNETVR  ")) return 9271; //VR
-                else if (SUtil.toHan(msg, 9, 3).equals("FCS") && SUtil.toHan(msg, 19, 7).equals("0600400") ) return 9236; // FCS
-                else if (SUtil.toHan(msg, 0, 9).equals("KSFC     ")|| SUtil.toHan(msg, 17, 4).equals("    ")) return 41449; //SDS EBOND
- 		else if (SUtil.toHan(msg, 0, 9).equals("KSBPAY   ")) return 9500; //KSBPAY;
-		else if (SUtil.toHan(msg, 0, 9).equals("KSDEBIT  ")) return 9501; //KSDEBIT
-                else    return 9238;  //WON
-        }
+
 
 	//KSBankMsg
 	public static String fmt(String str, int len, char ctype)

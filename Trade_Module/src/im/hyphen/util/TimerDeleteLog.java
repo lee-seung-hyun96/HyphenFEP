@@ -40,7 +40,7 @@ public class TimerDeleteLog extends Thread
 			{
 				if (null == SS_LOG_HOME)
 				{
-					LUtil.println(fnm + " ERROR : "+SS_LOG_HOME);
+					LUtil.println("SND", fnm + " ERROR : "+SS_LOG_HOME);
 					return;
 				}
 			}
@@ -48,7 +48,7 @@ public class TimerDeleteLog extends Thread
 			File dir = new File(SS_LOG_HOME);
 			if (dir == null || !dir.isDirectory())
 			{
-				LUtil.println(fnm + " ERROR : "+SS_LOG_HOME);
+				LUtil.println("SND", fnm + " ERROR : "+SS_LOG_HOME);
 				return;
 			}
 			/* Log 7day*/

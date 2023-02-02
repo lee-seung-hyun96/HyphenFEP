@@ -42,7 +42,7 @@ public class VirtualAccountHandler extends Thread
 		Encoding = CUtil.get("ENCODING");
 		if (Encoding == null || Encoding.length() == 0) Encoding = "ksc5601";
 
-		LUtil.println("Process Start COMM_LINE_TYPE["+LineType+"] ENCODING["+Encoding+"] LISTEN_PORT["+LISTEN_PORT+"]");
+		LUtil.println("SND", "Process Start COMM_LINE_TYPE["+LineType+"] ENCODING["+Encoding+"] LISTEN_PORT["+LISTEN_PORT+"]");
 				
 		ServerSocket ss = new ServerSocket(port);
 	
@@ -93,7 +93,7 @@ public class VirtualAccountHandler extends Thread
 	
 				dec_read_buf = EUtil.udecode_3des(Encrypt_Key.getBytes(), enc_read_buf);
 	
-				LUtil.println("RCV_MSG=[" + SUtil.toHanE(dec_read_buf) + "]");
+				LUtil.println("SND", "RCV_MSG=[" + SUtil.toHanE(dec_read_buf) + "]");
 			
 				dec_send_buf = parseMsg(dec_read_buf);
 
@@ -103,7 +103,7 @@ public class VirtualAccountHandler extends Thread
 				out.write(enc_send_buf);
 				out.flush();
 	
-				LUtil.println("SND_MSG=[" + SUtil.toHanE(dec_send_buf) + "]");
+				LUtil.println("SND", "SND_MSG=[" + SUtil.toHanE(dec_send_buf) + "]");
 			}
 			/* private line */
 			else
@@ -116,7 +116,7 @@ public class VirtualAccountHandler extends Thread
 	
 				read_len = read_len + rtn_len;
 	
-				LUtil.println("RCV_MSG=[" + SUtil.toHanE(read_buf) + "]");
+				LUtil.println("SND", "RCV_MSG=[" + SUtil.toHanE(read_buf) + "]");
 	
 				byte[] send_buf = parseMsg(read_buf);
 	
@@ -124,12 +124,12 @@ public class VirtualAccountHandler extends Thread
 				out.write(send_buf);
 				out.flush();
 	
-				LUtil.println("SND_MSG=[" + SUtil.toHanE(send_buf) + "]");
+				LUtil.println("SND", "SND_MSG=[" + SUtil.toHanE(send_buf) + "]");
 			}
 
 			
 		}catch (Exception e) {
-			LUtil.println(e.getMessage());
+			LUtil.println("SND", e.getMessage());
 		}finally{
 			try{if (in != null) in.close();}catch(Exception e){};
 			try{if (out != null) out.close();}catch(Exception e){};

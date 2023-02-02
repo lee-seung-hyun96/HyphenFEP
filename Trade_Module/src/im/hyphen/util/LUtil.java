@@ -68,50 +68,52 @@ public class LUtil
 		}
 	}
 	
-	public static void println(Object pstr)
-	{
-		if (!init())
-		{
-			System.out.println("ERROR LOG_PATH !!");
-			return;
-		}
-
-		String curr_date = SUtil.getCurrDate();
-
-		day_check(curr_date.substring(0,8));
-
-		File openFile = new File(LOG_FILE);
-		PrintStream out = null;
-
-		try{
-			if(openFile.exists()){
-				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
-			}else{
-				out = new PrintStream(new FileOutputStream(LOG_FILE), true);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
-		if (pstr instanceof Throwable)
-		{
-			Throwable tw = (Throwable)pstr;
-			tw.printStackTrace(out);
-			out.println();
-		}else
-		{
-			StringBuffer sb = new StringBuffer();
-
-			sb.append("[");
-			sb.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
-			sb.append("]" );
-			sb.append(pstr);
-
-			out.println(sb.toString());
-		}
-		out.close();
-	}
+//	public static synchronized void println(Object pstr)
+//	{
+//		if (!init())
+//		{
+//			System.out.println("ERROR LOG_PATH !!");
+//			return;
+//		}
+//
+//		String curr_date = SUtil.getCurrDate();
+//
+//		day_check(curr_date.substring(0,8));
+//
+//		File openFile = new File(LOG_FILE);
+//		PrintStream out = null;
+//
+//		try{
+//			if(openFile.exists()){
+//				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
+//			}else{
+//				out = new PrintStream(new FileOutputStream(LOG_FILE), true);
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//
+//		if (pstr instanceof Throwable)
+//		{
+//			Throwable tw = (Throwable)pstr;
+//			tw.printStackTrace(out);
+//			out.println();
+//		}else
+//		{
+//			StringBuffer sb = new StringBuffer();
+//
+//			sb.append("[");
+//			sb.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
+//			sb.append("]" );
+//			sb.append(pstr);
+//
+//			out.println(sb.toString());
+//		}
+//		out.close();
+//	}
 	
+	static PrintStream out = null;
+//	public static synchronized void println(String prefix, Object pstr)
 	public static void println(String prefix, Object pstr)
 	{
 		if (!init())
@@ -125,8 +127,6 @@ public class LUtil
 		day_check(prefix, curr_date.substring(0,8));
 
 		File openFile = new File(LOG_FILE);
-		PrintStream out = null;
-
 		try{
 			if(openFile.exists()){
 				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);

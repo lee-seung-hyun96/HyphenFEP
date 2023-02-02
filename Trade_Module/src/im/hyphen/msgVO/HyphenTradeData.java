@@ -23,7 +23,13 @@ public class HyphenTradeData {
     
     private InputStream bin_in = null;	/*증빙데이터*/
 	
-    
+    private int tCnt;
+	public int gettCnt() {
+		return tCnt;
+	}
+	public void settCnt(int tCnt) {
+		this.tCnt = tCnt;
+	}
 	public String getErrCode() {
 		return errCode;
 	}

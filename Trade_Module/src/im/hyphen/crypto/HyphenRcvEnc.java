@@ -133,7 +133,7 @@ public class HyphenRcvEnc extends Thread
       
 		}catch (Exception e) {
 			LUtil.println("RCV", "ERROR : "+e.getMessage()+ "REQ_MSG=["+ req_msg + "]" );
-			LUtil.println(e);
+			LUtil.println("SND", e);
 		}finally{
 			try{if (in != null) in.close();}catch(Exception e){};
 			try{if (out != null) out.close();}catch(Exception e){};

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import im.hyphen.msgVO.HyphenTradeData;
 
@@ -44,7 +45,7 @@ public class DUtil
 				return DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
 		}catch(Exception e)
 		{
-			LUtil.println(e);
+			LUtil.println("SND", e);
 		}
 		return null;
 	}
@@ -81,7 +82,6 @@ public class DUtil
 			pstmt.setString (8, htd.getCompCode()     );
 			pstmt.setString (9, htd.getSeqNo()     );
 			pstmt.setString (10, htd.getMsgCode()    );
-
 
 			cnt = pstmt.executeUpdate();
 
@@ -131,7 +131,6 @@ public class DUtil
 				htd[cnt].setSeqNo(rs.getString(5));		/* seq_no */
 				htd[cnt].setMsgCode(rs.getString(6));	/* msg_code */
 				htd[cnt].setSendMsg(rs.getString(7));	/* send_msg */
-				String msgData = rs.getString(7);
 				/* binary include msg_len */
 				if ((htd[cnt].getSvcType().equals("PRW") || htd[cnt].getSvcType().equals("PRD")) && htd[cnt].getMsgCode().equals("0600601")) {
 					InputStream rs_in = rs.getBinaryStream(8); /* binary data */
@@ -149,16 +148,24 @@ public class DUtil
 				return htd;
 			}else {
 				sendHtd = getSendData(htd, cnt);
-					pstmt.close(); pstmt= null;
-					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ? WHERE SEQ_NO BETWEEN '" + sendHtd[0].getSeqNo() +" ' AND '"+ sendHtd[sendHtd.length-1].getSeqNo() + "'";
+				pstmt.close(); pstmt= null;
+				for (int i = 0; i < cnt; i++) {
+					
+					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ?  WHERE COMP_CODE = ? AND SEQ_NO = ?";
+					
 					pstmt = con.prepareStatement(QRY);
 					pstmt.setString (1, RequestDate.substring(0,8) );
 					pstmt.setString (2, RequestDate.substring(8,14) );
-					cnt  = pstmt.executeUpdate();
-					con.commit();
+					pstmt.setString (3, htd[i].getCompCode() );
+					pstmt.setString (4, htd[i].getSeqNo() );
+					System.out.println("DEBUG   "+ cnt + "  compcode => " + htd[i].getCompCode() + "     SeqNo =>" + htd[i].getSeqNo());
+					pstmt.executeUpdate();
+				}
+				//					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ? WHERE SEQ_NO BETWEEN '" + sendHtd[0].getSeqNo() +" ' AND '"+ sendHtd[sendHtd.length-1].getSeqNo() + "'";
+				con.commit();
 			}
 		}catch(Throwable e) {
-			LUtil.println(e);
+			LUtil.println("SND", e);
 		} finally {
 			try {if(pstmt!=null){pstmt.close();pstmt= null;}}catch(Exception e){}
 			try {if(con !=null) {con.close( );}}catch(Exception e){}
@@ -200,7 +207,7 @@ public class DUtil
 
 			pstmt = con.prepareStatement(SEL_QRY);
 
-			LUtil.println("DEBUG 0900/100 search BANKCODE[" + bank_code + "], VR_ACC[" + vr_acct_no + "], AMT[" + amt + "], SEND_DATE[" + send_date + "]");
+			LUtil.println("SND", "DEBUG 0900/100 search BANKCODE[" + bank_code + "], VR_ACC[" + vr_acct_no + "], AMT[" + amt + "], SEND_DATE[" + send_date + "]");
 
 			d_amt = Long.parseLong(amt);
 
@@ -226,18 +233,18 @@ public class DUtil
 
 			if (cnt < 1)
 			{
-				LUtil.println( "ERROR 0900/100 Not found information  bank_code("+bank_code+") account_no("+vr_acct_no+")");
+				LUtil.println( "SND", "ERROR 0900/100 Not found information  bank_code("+bank_code+") account_no("+vr_acct_no+")");
 				rHash.put("error_code", "L008");   /* not found account */
 			}
 			else if (d_db_amt > 0 && d_amt != d_db_amt)
 			{
-				LUtil.println( "ERROR 0900/100 mismatch amt!  bank_code("+bank_code+") account_no("+vr_acct_no+") amount("+amt+") db_amount("+db_amt+")");
+				LUtil.println( "SND", "ERROR 0900/100 mismatch amt!  bank_code("+bank_code+") account_no("+vr_acct_no+") amount("+amt+") db_amount("+db_amt+")");
 				rHash.put("error_code", "L002");
 
 			}
 			else if (Integer.parseInt(final_date) < Integer.parseInt(send_date))
 			{
-				LUtil.println( "ERROR 0900/100 final date!  bank_code("+bank_code+") account_no("+vr_acct_no+") final_date("+final_date+")");
+				LUtil.println( "SND", "ERROR 0900/100 final date!  bank_code("+bank_code+") account_no("+vr_acct_no+") final_date("+final_date+")");
 				rHash.put("error_code", "L004");  
 			}
 			else 
@@ -247,7 +254,7 @@ public class DUtil
 			}
 
 		}catch(Throwable e) {
-			LUtil.println(e);
+			LUtil.println("SND", e);
 		} finally {
 			try {if(pstmt!=null){pstmt.close();pstmt= null;}}catch(Exception e){}
 			try {if(con !=null) {con.close( );/*con = null;*/}}catch(Exception e){}
@@ -330,27 +337,27 @@ public class DUtil
 			try{con.rollback();}catch(SQLException se){}
 
 			if(sql_code == 1){
-				LUtil.println("Oracle duplicate keys");
+				LUtil.println("SND", "Oracle duplicate keys");
 				return true;
 			}
 			else if (sql_code == -239){
-				LUtil.println("Informix duplicate keys");
+				LUtil.println("SND", "Informix duplicate keys");
 				return true;
 			}
 			else if (sql_code == 2627 || sql_code == 2601){
-				LUtil.println("MSSQL duplicate keys");
+				LUtil.println("SND", "MSSQL duplicate keys");
 				return true;
 			}
 			else if (sql_code == 1062){
-				LUtil.println("MYSQL duplicate keys");
+				LUtil.println("SND", "MYSQL duplicate keys");
 				return true;
 			}
 			else if (sql_code == -803){
-				LUtil.println("DB2 duplicate keys");
+				LUtil.println("SND", "DB2 duplicate keys");
 				return true;
 			}
 
-			LUtil.println(e);
+			LUtil.println("SND", e);
 
 		} finally {
 			try {if(pstmt != null){pstmt.close();pstmt = null;}}catch(Exception e){}
@@ -415,27 +422,27 @@ public class DUtil
 			try{con.rollback();}catch(SQLException se){}
 
 			if(sql_code == 1){
-				LUtil.println("Oracle duplicate keys");
+				LUtil.println("SND", "Oracle duplicate keys");
 				return true;
 			}
 			else if (sql_code == -239){
-				LUtil.println("Informix duplicate keys");
+				LUtil.println("SND", "Informix duplicate keys");
 				return true;
 			}
 			else if (sql_code == 2627 || sql_code == 2601){
-				LUtil.println("MSSQL duplicate keys");
+				LUtil.println("SND", "MSSQL duplicate keys");
 				return true;
 			}
 			else if (sql_code == 1062){
-				LUtil.println("MYSQL duplicate keys");
+				LUtil.println("SND", "MYSQL duplicate keys");
 				return true;
 			}
 			else if (sql_code == -803){
-				LUtil.println("DB2 duplicate keys");
+				LUtil.println("SND", "DB2 duplicate keys");
 				return true;
 			}
 
-			LUtil.println(e);
+			LUtil.println("SND", e);
 
 		} finally {
 			try {if(pstmt!=null){pstmt.close();pstmt= null;}}catch(Exception e){}
