@@ -3,10 +3,15 @@ package im.hyphen.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.Calendar;
 
 public class LUtil
 {
+	private static final Object lock = new Object();
 	static String LOG_DIR = null;
 	private static synchronized boolean init()
 	{
@@ -67,50 +72,7 @@ public class LUtil
 			LOG_PREFIX = prefix;
 		}
 	}
-	
-//	public static synchronized void println(Object pstr)
-//	{
-//		if (!init())
-//		{
-//			System.out.println("ERROR LOG_PATH !!");
-//			return;
-//		}
-//
-//		String curr_date = SUtil.getCurrDate();
-//
-//		day_check(curr_date.substring(0,8));
-//
-//		File openFile = new File(LOG_FILE);
-//		PrintStream out = null;
-//
-//		try{
-//			if(openFile.exists()){
-//				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
-//			}else{
-//				out = new PrintStream(new FileOutputStream(LOG_FILE), true);
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-//
-//		if (pstr instanceof Throwable)
-//		{
-//			Throwable tw = (Throwable)pstr;
-//			tw.printStackTrace(out);
-//			out.println();
-//		}else
-//		{
-//			StringBuffer sb = new StringBuffer();
-//
-//			sb.append("[");
-//			sb.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
-//			sb.append("]" );
-//			sb.append(pstr);
-//
-//			out.println(sb.toString());
-//		}
-//		out.close();
-//	}
+
 	
 	static PrintStream out = null;
 //	public static synchronized void println(String prefix, Object pstr)
@@ -122,38 +84,56 @@ public class LUtil
 			return;
 		}
 
+
 		String curr_date = SUtil.getCurrDate();
 
 		day_check(prefix, curr_date.substring(0,8));
+		RandomAccessFile file = null;
+		FileChannel channel = null;
 
-		File openFile = new File(LOG_FILE);
-		try{
-			if(openFile.exists()){
-				out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
-			}else{
-				out = new PrintStream(new FileOutputStream(LOG_FILE), true);
+		synchronized (lock) {
+			try {
+				file = new RandomAccessFile(LOG_FILE, "rw");
+				channel = file.getChannel();
+				FileLock lock = null;
+
+
+				File openFile = new File(LOG_FILE);
+				if (openFile.exists()) {
+					file.writeInt(10);
+					out = new PrintStream(new FileOutputStream(LOG_FILE, true), true);
+				} else {
+					file.writeInt(20);
+					out = new PrintStream(new FileOutputStream(LOG_FILE), true);
+				}
+
+
+				if (pstr instanceof Throwable) {
+					Throwable tw = (Throwable) pstr;
+					tw.printStackTrace(out);
+					out.println();
+				} else {
+					StringBuffer sb = new StringBuffer();
+
+					sb.append("[");
+					sb.append(curr_date.substring(8, 10)).append(":").append(curr_date.substring(10, 12)).append(":").append(curr_date.substring(12, 14));
+					sb.append("]");
+					sb.append(pstr);
+					out.println(sb.toString());
+
+				}
+				//lock.release();
+				//channel.close();
+				//file.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+
+			} finally {
+
+				try {if (out != null) out.close();} catch (Exception e) {}
+				;
+
 			}
-
-			if (pstr instanceof Throwable)
-			{
-				Throwable tw = (Throwable)pstr;
-				tw.printStackTrace(out);
-				out.println();
-			}else{
-				StringBuffer sb = new StringBuffer();
-
-				sb.append("[");
-				sb.append(curr_date.substring(8,10)).append(":").append(curr_date.substring(10,12)).append(":").append(curr_date.substring(12,14));
-				sb.append("]" );
-				sb.append(pstr);
-
-				out.println(sb.toString());
-			}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}finally {
-			try{if (out != null) out.close();}catch(Exception e){};
 		}
 	}
 	
