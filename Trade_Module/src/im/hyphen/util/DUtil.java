@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 public class DUtil
@@ -23,7 +22,7 @@ public class DUtil
 	static String PASSWORD      = "";
 	static String TABLE_NAME    = "";
 	public static String VrUpdateType = null;
-	final static int MaxLen = 100;
+	final static int MaxLen = 10000;
 	public static Connection getConnection()
 	{
 		if (null == DRIVER_NAME || CUtil.isNew())

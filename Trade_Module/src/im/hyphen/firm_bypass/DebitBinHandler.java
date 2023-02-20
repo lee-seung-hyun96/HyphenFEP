@@ -48,8 +48,9 @@ public class DebitBinHandler extends Thread
 
 	public DataInputStream msgTodata() throws IOException {
 		StringBuilder sb = new StringBuilder();
+		String msgLen = String.format("%04d",this.htd.getSendMsg().length());
+		sb.append(msgLen);
 		sb.append(this.htd.getSendMsg());
-		sb.append(this.htd.getSendMsg().length());
 		String send_msg = sb.toString();
 		InputStream is = new ByteArrayInputStream(send_msg.getBytes());
 		DataInputStream dis = new DataInputStream(is);
@@ -201,26 +202,77 @@ public class DebitBinHandler extends Thread
 		dout.write(sbuf,0,sbuf.length);
 		dout.flush();
 
-		/*
-      if (sbuf.length > 40)
-      {
-         LUtil.println("DEBIT_BIN", "CHECK:("+MSG_IDX+") send_msg(S:"+wlen+":"+midx+":"+SUtil.hex_encode(sbuf,0,32)+"..."+SUtil.hex_encode(sbuf,midx-8,8)+")");
-      }else
-      {
-         LUtil.println("DEBIT_BIN", "CHECK:("+MSG_IDX+") send_msg(S:"+wlen+":"+midx+":"+SUtil.hex_encode(sbuf,0,midx)+")");
-      }
-		 */
-
 		return wlen;
 	}
 
+	String HYPHEN_ip = "";
+	int HYPHEN_port = 0;
+
+	
 	int processClientNewKey() throws IOException
 	{
-		String[] van_addrs = SUtil.split(IUtil.get("fpeg.gate.00.v.addr"),":");
+		String lineType = CUtil.get("COMM_LINE_TYPE"); 
+		String servType = CUtil.get("COMM_SERV_TYPE");
+		String[] i_addrs = null;
+		
+		/*Internet*/	
+		if(lineType.equals("I") || lineType.equals("i") ){
+			/*DEV*/	
+			if(servType.equals("D") || servType.equals("d")) {
+				i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN_BIN"),":");
+				HYPHEN_ip = i_addrs[0];
+				if(htd.getSvcType().equals("DBT")||htd.getSvcType().equals("PRD")) {
+					HYPHEN_port=Integer.parseInt(i_addrs[2]);
+				}else {
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}
+			/*REAL*/	
+			}else {
+				i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN_BIN"),":");
+				HYPHEN_ip = i_addrs[0];
+				if(htd.getSvcType().equals("DBT")||htd.getSvcType().equals("PRD")) {
+					HYPHEN_port=Integer.parseInt(i_addrs[2]);
+				}else {
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}
+			}
+			/*Private*/	
+		}else {
+			if(servType.equals("D") || servType.equals("d")) {
+				if(htd.getSvcType().equals("DBT")) {
+					i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN_DBT"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}else if(htd.getSvcType().equals("PRW")) {
+					i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN_BIN"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}else if(htd.getSvcType().equals("PRD")) {
+					i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN_BIN"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[2]);
+				}
+			}else {
+				if(htd.getSvcType().equals("DBT")) {
+					i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN_DBT"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}else if(htd.getSvcType().equals("PRW")) {
+					i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN_BIN"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[1]);
+				}else if(htd.getSvcType().equals("PRD")) {
+					i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN_BIN"),":");
+					HYPHEN_ip = i_addrs[0];
+					HYPHEN_port=Integer.parseInt(i_addrs[2]);
+				}
+			}
+
+		}
 
 		s_cs      =   new Socket();
 		s_cs.setSoTimeout(READ_TIMEOUT*1000);    //read timeout             
-		s_cs.connect(new InetSocketAddress(van_addrs[0], Integer.parseInt(van_addrs[1])));
+		s_cs.connect(new InetSocketAddress(HYPHEN_ip, HYPHEN_port));
 
 		byte[] sbuf = new byte[267];
 		int    tlen = sbuf.length - 4;
@@ -238,10 +290,6 @@ public class DebitBinHandler extends Thread
 
 		sbuf[sbuf.length-1] = C_ETX;
 
-		/*
-      LUtil.println("DEBIT_BIN", "CHECK:("+MSG_IDX+") send_key_msg("+van_addrs[0]+":"+van_addrs[1]+")(S:"+sbuf.length+":"+SUtil.hex_encode(sbuf,0,32)+"..."+SUtil.hex_encode(sbuf,sbuf.length-8,8)+")");
-		 */
-
 		DataOutputStream dout = new DataOutputStream(s_cs.getOutputStream());
 		dout.write(sbuf,0,sbuf.length);
 		dout.flush();
@@ -249,10 +297,6 @@ public class DebitBinHandler extends Thread
 		byte[] rbuf = new byte[7+34+1];
 		DataInputStream din = new DataInputStream(s_cs.getInputStream());
 		din.readFully(rbuf) ;
-
-		/*
-      LUtil.println("DEBIT_BIN", "CHECK:("+MSG_IDX+") read_key_msg(S:"+rbuf.length+":"+SUtil.hex_encode(rbuf,0,rbuf.length)+")");
-		 */
 
 		int midx = 7;
 
@@ -264,14 +308,12 @@ public class DebitBinHandler extends Thread
 
 		storeSessionKey(enc_iv.getBytes("8859_1") ,trno.getBytes("8859_1"));
 
-
 		return 1;
 	}
 
 	int processServerMsg() throws IOException
 	{
 		int  sidx = 0, clen = 0;
-		String fnm = "processServerMsg()";
 		DataInputStream in = null;
 
 
@@ -361,8 +403,6 @@ public class DebitBinHandler extends Thread
 		byte[] enc_counter = new byte[16];
 		byte[] enc_data    = new byte[elen-7-16-1];
 
-		DataOutputStream   out      = null;   
-
 		midx = 7;
 		System.arraycopy(mbuf ,midx ,enc_counter ,0 ,enc_counter.length); midx = midx + enc_counter.length;
 		System.arraycopy(mbuf ,midx ,enc_data    ,0 ,enc_data.length   );
@@ -376,11 +416,8 @@ public class DebitBinHandler extends Thread
 
 		byte[] wbuf = speed_ctr_decrypt(enc_data, enc_data.length);
 
-		LUtil.println("DEBIT_BIN", "[DAEMON->CORP] rpy_msg["+new String (wbuf, 0, wbuf.length, "8859_1")+"] len["+wbuf.length+"]");
+		LUtil.println("SND", "[DAEMON->CORP] rpy_msg["+new String (wbuf, 0, wbuf.length, "8859_1")+"] len["+wbuf.length+"]");
 
-		out = new DataOutputStream(cs.getOutputStream()); 
-
-		out.write(wbuf, 0, wbuf.length); 
 
 		return wbuf.length;
 	}
@@ -645,17 +682,12 @@ public class DebitBinHandler extends Thread
 			throw new IOException("ReadMsg2 error - (" + rtn_len + ")오류!!");
 		}
 
-		/*
-      LUtil.println("DEBIT_BIN", "DEBUG ReadMsg2=[" + new String(rbuf) + "]");
-		 */
-
 		return rbuf;
 	}
 	public byte[] ReadLine(DataInputStream in, int msg_len) throws Exception
 	{
 		int rtn_len = 0;
 		int read_len = 0;
-		int cnt = 0;
 
 		int rest_len = msg_len;
 
@@ -663,8 +695,6 @@ public class DebitBinHandler extends Thread
 
 		while (true)
 		{
-			cnt++;
-
 			if (rest_len != (rtn_len = in.read(rbuf, read_len, rest_len)))
 			{
 				/* 전문길이보다 짧다 */
@@ -700,6 +730,8 @@ public class DebitBinHandler extends Thread
 		{
 			byte[]    msg_buf = ReadMsg(msg_in);
 			String    MsgCode = new String(msg_buf, 4+9+8+2, 7, "8859_1");
+
+			LUtil.println("SND","[CORP->DAEMON] req_msg["+new String (msg_buf, 0, msg_buf.length, "8859_1")+"] len["+msg_buf.length+"]");
 
 			/* 증빙자료는  증빙자료 추가로 수신해야된다. */
 			if (MsgCode.equals("0600601"))

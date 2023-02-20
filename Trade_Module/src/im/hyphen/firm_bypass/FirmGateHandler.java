@@ -109,11 +109,11 @@ public class FirmGateHandler extends Thread
 
 			} else {
 				if(servType.equals("D") || servType.equals("d")) {
-					String[] i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN" + htd.getSvcType()),":");
+					String[] i_addrs = SUtil.split(IUtil.get("DEV_HYPHEN_" + htd.getSvcType()),":");
 					HYPHEN_ip = i_addrs[0];
 					HYPHEN_port=Integer.parseInt(i_addrs[1]);
 				}else {
-					String[] i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN" + htd.getSvcType()),":");
+					String[] i_addrs = SUtil.split(IUtil.get("REAL_HYPHEN_" + htd.getSvcType()),":");
 					HYPHEN_ip = i_addrs[0];
 					HYPHEN_port=Integer.parseInt(i_addrs[1]);
 					

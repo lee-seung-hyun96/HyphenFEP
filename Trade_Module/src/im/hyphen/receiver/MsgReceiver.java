@@ -65,8 +65,6 @@ public class MsgReceiver extends Thread{
     {
         DataOutputStream out         = null;
         DataInputStream in          = null;
-        String              read_msg    = null;
-
 
         int read_len = 0, rtn_len = 0;
 
@@ -155,7 +153,6 @@ public class MsgReceiver extends Thread{
             String  amt         = SUtil.toHanX(byte_data, 170, 13   );
             String  corp_name 	= "";
             String  error_code = "L099";
-            int     len;
             byte[] read_buf = (byte[])byte_data.clone();
 
             try {

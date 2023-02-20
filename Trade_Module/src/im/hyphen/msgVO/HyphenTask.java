@@ -25,7 +25,7 @@ public class HyphenTask implements Callable <Integer> {
 	
 	public Integer call() throws Exception{
 		
-		String svcType = SvcCode(htd_tmp.getSvcType());
+		String svcType = SvcCode(htd_tmp.getSvcType(), htd_tmp.getMsgCode());
 		switch(svcType) {
 		case firmEGate:
 			String threadName = Thread.currentThread().getName();
@@ -54,8 +54,8 @@ public class HyphenTask implements Callable <Integer> {
 		
 	}
 	
-	public String SvcCode(String svc) {
-		if(svc.equals("PRW")||svc.equals("PRD")) {
+	public String SvcCode(String svc, String msgcode) {
+		if(svc.equals("PRW")||svc.equals("PRD")||svc.equals("DBT") || msgcode.equals("0600601")) {
 			return "firmDebitGate";
 		}else {
 			return "firmEGate";

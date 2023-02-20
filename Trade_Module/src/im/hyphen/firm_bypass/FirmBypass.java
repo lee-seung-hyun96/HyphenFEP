@@ -21,6 +21,7 @@ public class FirmBypass{
 
 		TimerDeleteLog DeleteLog = new TimerDeleteLog(Integer.parseInt(CUtil.get("LOG_SAVE_DAYS")), CUtil.get("LOG_PATH"));
 		DeleteLog.start();
+		
 		new MsgSender().start();
 		new MsgReceiver().start();
 		

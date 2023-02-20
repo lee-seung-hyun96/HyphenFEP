@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 import java.util.Calendar;
 
 public class LUtil
@@ -31,25 +28,6 @@ public class LUtil
 	static String LOG_FILE      = null;
 	static String  LOG_PREFIX   = null;
 	
-	private static synchronized void day_check(String curr_dt8)
-	{
-		if (LOG_DT == null || !LOG_DT.equals(curr_dt8))
-		{
-
-			StringBuffer sb = new StringBuffer();
-
-			sb.append(LOG_DIR);
-			if (!LOG_DIR.endsWith("/") && !LOG_DIR.endsWith("\\")) sb.append('/');
-
-			sb.append(curr_dt8);
-			sb.append(".log");
-
-			LOG_FILE = sb.toString();
-
-			LOG_DT = curr_dt8;
-		}
-	}
-
 	private static synchronized void day_check(String prefix, String curr_dt8)
 	{
 		if (LOG_DT == null || LOG_PREFIX == null || !LOG_DT.equals(curr_dt8) || !LOG_PREFIX.equals(prefix))
@@ -75,7 +53,6 @@ public class LUtil
 
 	
 	static PrintStream out = null;
-//	public static synchronized void println(String prefix, Object pstr)
 	public static void println(String prefix, Object pstr)
 	{
 		if (!init())
@@ -89,15 +66,10 @@ public class LUtil
 
 		day_check(prefix, curr_date.substring(0,8));
 		RandomAccessFile file = null;
-		FileChannel channel = null;
 
 		synchronized (lock) {
 			try {
 				file = new RandomAccessFile(LOG_FILE, "rw");
-				channel = file.getChannel();
-				FileLock lock = null;
-
-
 				File openFile = new File(LOG_FILE);
 				if (openFile.exists()) {
 					file.writeInt(10);
@@ -122,9 +94,6 @@ public class LUtil
 					out.println(sb.toString());
 
 				}
-				//lock.release();
-				//channel.close();
-				//file.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 
