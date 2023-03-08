@@ -20,7 +20,6 @@ public class DUtil
 	static String DB_URL        = null;
 	static String USER_NAME     = "";
 	static String PASSWORD      = "";
-	static String TABLE_NAME    = "";
 	public static String VrUpdateType = null;
 	final static int MaxLen = 10000;
 	public static Connection getConnection()
@@ -55,14 +54,13 @@ public class DUtil
 		PreparedStatement   pstmt = null;
 		String recv_flag =  " ";
 		String RecvDate     = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-		TABLE_NAME          = CUtil.get("JDBC_TABLENAME");
 
 		if (htd.getErrCode().equals("0000")) recv_flag = "Y";
 		else if (htd.getErrCode().equals("CONE")) recv_flag = "C";  // connect error 
 		else if (htd.getErrCode().equals("TIME")) recv_flag = "T";  // response timeout
 		else recv_flag = "F"; 								
 
-		String QRY = "UPDATE "+TABLE_NAME+" SET RECV_FLAG = ?, RECV_DATE = ?, RECV_TIME = ?, RECV_MSG = ? WHERE REQ_DATE = ? AND SVC_TYPE = ? AND BANK_CODE = ? AND COMP_CODE = ? AND SEQ_NO = ? AND MSG_CODE = ? AND SEND_FLAG = 'Y' AND RECV_FLAG = 'N' ";
+		String QRY = "UPDATE HYPHEN_TRADE_REQUEST SET RECV_FLAG = ?, RECV_DATE = ?, RECV_TIME = ?, RECV_MSG = ? WHERE REQ_DATE = ? AND SVC_TYPE = ? AND BANK_CODE = ? AND COMP_CODE = ? AND SEQ_NO = ? AND MSG_CODE = ? AND SEND_FLAG = 'Y' AND RECV_FLAG = 'N' ";
 
 		int cnt = 0;
 		try {
@@ -106,9 +104,8 @@ public class DUtil
 		HyphenTradeData[] 	sendHtd = null;
 
 		String RequestDate  = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-		TABLE_NAME          = CUtil.get("JDBC_TABLENAME");
 		/* db select */
-		String QRY = "SELECT REQ_DATE, SVC_TYPE, BANK_CODE, COMP_CODE, SEQ_NO, MSG_CODE, SEND_MSG, BIN_DATA  FROM " + TABLE_NAME + " WHERE REQ_DATE = ? AND SEND_FLAG = 'N' ORDER BY REQ_DATE, REQ_TIME, SEQ_NO";
+		String QRY = "SELECT REQ_DATE, SVC_TYPE, BANK_CODE, COMP_CODE, SEQ_NO, MSG_CODE, SEND_MSG, BIN_DATA  FROM HYPHEN_TRADE_REQUEST WHERE REQ_DATE = ? AND SEND_FLAG = 'N' ORDER BY REQ_DATE, REQ_TIME, SEQ_NO";
 
 		try {
 			con = getConnection();
@@ -150,7 +147,7 @@ public class DUtil
 				pstmt.close(); pstmt= null;
 				for (int i = 0; i < cnt; i++) {
 
-					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ?  WHERE COMP_CODE = ? AND SEQ_NO = ?";
+					QRY = "UPDATE HYPHEN_TRADE_REQUEST SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ?  WHERE COMP_CODE = ? AND SEQ_NO = ?";
 
 					pstmt = con.prepareStatement(QRY);
 					pstmt.setString (1, RequestDate.substring(0,8) );
@@ -199,7 +196,7 @@ public class DUtil
 		rHash.put("error_code", "L099");
 
 		/* check account */
-		SEL_QRY = "SELECT CORP_NAME, AMT, FINAL_DATE FROM KSNET_VR_ACCOUNT WHERE BANK_CODE = ? AND VR_ACCT_NO = ? AND USE_FLAG = 'Y' ";
+		SEL_QRY = "SELECT CORP_NAME, AMT, FINAL_DATE FROM HYPHEN_VR_ACCOUNT WHERE BANK_CODE = ? AND VR_ACCT_NO = ? AND USE_FLAG = 'Y' ";
 		try {
 			con = getConnection();
 			con.setAutoCommit(false);
@@ -307,8 +304,8 @@ public class DUtil
 		Connection        con   = null;
 		PreparedStatement pstmt = null;
 
-		String  INS2_QRY = "INSERT INTO KSNET_TRADE_DATA (tran_code,comp_code,bank_code,mess_code,mess_diff, tran_cnt,seq_no,tran_date,tran_time,stan_resp_code,bank_resp_code,inqu_date,inqu_no,bank_seq_no,filler_1,corp_acct_no,comp_cnt,deal_sele,in_bank_code,total_amt,balance,bran_code,cust_name,check_no,cash,out_bank_check, etc_check,vr_acct_no,deal_date,deal_time,serial_no,filler_2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		String  INS3_QRY = "UPDATE KSNET_VR_ACCOUNT SET USE_FLAG = 'N' WHERE BANK_CODE = ? AND VR_ACCT_NO = ? AND AMT = ? AND USE_FLAG = 'Y'";
+		String  INS2_QRY = "INSERT INTO HYPHEN_TRADE_DATA (tran_code,comp_code,bank_code,mess_code,mess_diff, tran_cnt,seq_no,tran_date,tran_time,stan_resp_code,bank_resp_code,inqu_date,inqu_no,bank_seq_no,filler_1,corp_acct_no,comp_cnt,deal_sele,in_bank_code,total_amt,balance,bran_code,cust_name,check_no,cash,out_bank_check, etc_check,vr_acct_no,deal_date,deal_time,serial_no,filler_2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String  INS3_QRY = "UPDATE HYPHEN_VR_ACCOUNT SET USE_FLAG = 'N' WHERE BANK_CODE = ? AND VR_ACCT_NO = ? AND AMT = ? AND USE_FLAG = 'Y'";
 		VrUpdateType = CUtil.get("AUTO_VR_UPDATE");
 		try {
 			con = getConnection();
@@ -444,7 +441,7 @@ public class DUtil
 		Connection          con     = null;
 		PreparedStatement   pstmt   = null;
 
-		String  INS4_QRY = "INSERT INTO KSNET_TRADE_ERR (tran_code, comp_code, bank_code, mess_code, mess_diff, tran_cnt, seq_no, tran_date, tran_time, stan_resp_code, bank_resp_code, inqu_date, inqu_no, bank_seq_no, filler_1, org_seq_no, out_account_no, in_account_no, in_money, in_bank_code, nor_money, abnor_money, div_proc_cnt, div_proc_no, ta_no, not_in_amt, err_code, filler_2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String  INS4_QRY = "INSERT INTO HYPHEN_TRADE_ERR (tran_code, comp_code, bank_code, mess_code, mess_diff, tran_cnt, seq_no, tran_date, tran_time, stan_resp_code, bank_resp_code, inqu_date, inqu_no, bank_seq_no, filler_1, org_seq_no, out_account_no, in_account_no, in_money, in_bank_code, nor_money, abnor_money, div_proc_cnt, div_proc_no, ta_no, not_in_amt, err_code, filler_2) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		try {
 			con = getConnection();

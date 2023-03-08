@@ -146,8 +146,8 @@ public class FirmGateHandler extends Thread
 				htd.setRecvMsg(recv_msg);
 			}
 			this.htd.setErrCode("0000");
-			this.htd.setRecvMsg(recv_msg);
-
+		this.htd.setRecvMsg(recv_msg);
+	
 			DUtil.Update_RecvData(this.htd);   /* update recv_msg  */
 			System.out.println("DEBUG OUT  " + a + "   CNT =  " + htd.gettCnt() + "    SeqNo = " + htd.getSeqNo() + "   OUT");
 

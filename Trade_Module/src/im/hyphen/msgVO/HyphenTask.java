@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import im.hyphen.firm_bypass.DebitBinHandler;
 import im.hyphen.firm_bypass.FirmGateHandler;
 import im.hyphen.util.CUtil;
+import im.hyphen.util.LUtil;
 
 public class HyphenTask implements Callable <Integer> {
 	
@@ -20,7 +21,6 @@ public class HyphenTask implements Callable <Integer> {
 
 	public HyphenTask(HyphenTradeData htd_tmp) {
 		this.htd_tmp = htd_tmp;
-		
 	}
 	
 	public Integer call() throws Exception{
@@ -29,22 +29,12 @@ public class HyphenTask implements Callable <Integer> {
 		switch(svcType) {
 		case firmEGate:
 			String threadName = Thread.currentThread().getName();
-
 			new FirmGateHandler(htd_tmp, threadName).run();
-			
-			
-			//									executor.execute(egateRunnable);
 			break;
 		case firmDebitGate:
-
 			new DebitBinHandler(htd_tmp).start();
-
-			break;
-		case normal:
-
 			break;
 		default:
-
 			break;
 		}
 		
@@ -55,7 +45,7 @@ public class HyphenTask implements Callable <Integer> {
 	}
 	
 	public String SvcCode(String svc, String msgcode) {
-		if(svc.equals("PRW")||svc.equals("PRD")||svc.equals("DBT") || msgcode.equals("0600601")) {
+		if(svc.equals("PRW")||svc.equals("PRD")|| msgcode.equals("0600601")) {
 			return "firmDebitGate";
 		}else {
 			return "firmEGate";

@@ -269,7 +269,10 @@ public class DebitBinHandler extends Thread
 			}
 
 		}
-
+		
+		System.out.println("ip >  " + HYPHEN_ip);
+		System.out.println("port >  " + HYPHEN_port);
+		
 		s_cs      =   new Socket();
 		s_cs.setSoTimeout(READ_TIMEOUT*1000);    //read timeout             
 		s_cs.connect(new InetSocketAddress(HYPHEN_ip, HYPHEN_port));
