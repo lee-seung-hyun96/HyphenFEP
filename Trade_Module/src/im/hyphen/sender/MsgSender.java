@@ -29,7 +29,6 @@ public class MsgSender extends Thread {
 			List<HyphenTask> list = new ArrayList<HyphenTask>();
 			try {
 				if (htd != null) {
-					System.out.println("length = " + htd.length);
 					for (int i = 0; i < htd.length; i++) {
 						list.add(new HyphenTask(htd[i]));
 						htd[i].settCnt(i + 1);
@@ -40,7 +39,6 @@ public class MsgSender extends Thread {
 					htd = null;
 
 				} else /* db select not found */ {
-					System.out.println("DB Select is null");
 					Thread.sleep(1000);
 				}
 			} catch (Throwable e) {

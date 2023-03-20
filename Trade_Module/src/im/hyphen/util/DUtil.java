@@ -154,10 +154,8 @@ public class DUtil
 					pstmt.setString (2, RequestDate.substring(8,14) );
 					pstmt.setString (3, htd[i].getCompCode() );
 					pstmt.setString (4, htd[i].getSeqNo() );
-					System.out.println("DEBUG   "+ cnt + "  compcode => " + htd[i].getCompCode() + "     SeqNo =>" + htd[i].getSeqNo());
 					pstmt.executeUpdate();
 				}
-				//					QRY = "UPDATE " + TABLE_NAME + " SET SEND_FLAG = 'Y', SEND_DATE = ?, SEND_TIME = ? WHERE SEQ_NO BETWEEN '" + sendHtd[0].getSeqNo() +" ' AND '"+ sendHtd[sendHtd.length-1].getSeqNo() + "'";
 				con.commit();
 			}
 		}catch(Throwable e) {

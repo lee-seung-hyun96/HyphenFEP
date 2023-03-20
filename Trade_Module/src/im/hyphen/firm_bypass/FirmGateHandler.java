@@ -32,7 +32,6 @@ public class FirmGateHandler extends Thread
 		String HYPHEN_ip = "";
 		int HYPHEN_port = 0;
 		try {
-			System.out.println("DEBUG IN  " + a + "   CNT =  " + htd.gettCnt() + "    SeqNo = " + htd.getSeqNo()+ "   IN");
 			this.htd.setErrCode("9999");
 			send_msg = htd.getSendMsg();
 
@@ -149,7 +148,6 @@ public class FirmGateHandler extends Thread
 		this.htd.setRecvMsg(recv_msg);
 	
 			DUtil.Update_RecvData(this.htd);   /* update recv_msg  */
-			System.out.println("DEBUG OUT  " + a + "   CNT =  " + htd.gettCnt() + "    SeqNo = " + htd.getSeqNo() + "   OUT");
 
 		}catch(SocketTimeoutException e) {
 			this.htd.setErrCode("TIME");

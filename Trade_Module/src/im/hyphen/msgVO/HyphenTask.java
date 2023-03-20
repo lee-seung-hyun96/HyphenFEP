@@ -45,7 +45,8 @@ public class HyphenTask implements Callable <Integer> {
 	}
 	
 	public String SvcCode(String svc, String msgcode) {
-		if(svc.equals("PRW")||svc.equals("PRD")|| msgcode.equals("0600601")) {
+		String lineType = CUtil.get("COMM_LINE_TYPE");
+		if(svc.equals("PRW")||svc.equals("PRD")|| msgcode.equals("0600601")||(svc.equals("DBT") && (lineType.equals("I")||lineType.equals("i")))) {
 			return "firmDebitGate";
 		}else {
 			return "firmEGate";
