@@ -1,5 +1,7 @@
 package im.hyphen.msgVO;
 
+import im.hyphen.util.SUtil;
+
 public class SDSHeader {
 
     private String trCode; /* Transaction Code [9] */
@@ -146,5 +148,24 @@ public class SDSHeader {
                 sdsArea +
                 compArea +
                 bankArea ;
+    }
+
+    public void parseMsg(byte[] msg){
+        int ipos = 0;
+        trCode              = SUtil.toHanX(msg,ipos, 9); ipos += 9;
+        compCode            = SUtil.toHanX(msg,ipos, 12); ipos += 12;
+        bankCode            = SUtil.toHanX(msg,ipos, 2); ipos += 2;
+        msgCode             = SUtil.toHanX(msg,ipos, 4); ipos += 4;
+        kubun               = SUtil.toHanX(msg,ipos, 3); ipos += 3;
+        sendCnt             = SUtil.toHanX(msg,ipos, 1); ipos += 1;
+        msgNo               = SUtil.toHanX(msg,ipos, 6); ipos += 6;
+        sendDate            = SUtil.toHanX(msg,ipos, 8); ipos += 8;
+        sendTime            = SUtil.toHanX(msg,ipos, 6); ipos += 6;
+        retCode             = SUtil.toHanX(msg,ipos, 4); ipos += 4;
+        sikByulCode         = SUtil.toHanX(msg,ipos, 9); ipos += 9;
+        sdsArea             = SUtil.toHanX(msg,ipos, 15); ipos += 15;
+        compArea            = SUtil.toHanX(msg,ipos, 11); ipos += 11;
+        bankArea            = SUtil.toHanX(msg,ipos, 10); ipos += 10;
+
     }
 }

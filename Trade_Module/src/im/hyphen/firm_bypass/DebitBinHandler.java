@@ -111,7 +111,7 @@ public class DebitBinHandler extends Thread
 		int read_len;
 		int rest_len;
 
-		/* Àü¼Û¼Óµµ Á¶Àý ÇÊ¿ä  ÃÖ¼Ò 0.1ÃÊ => 0.05ÃÊ·Î ¼öÁ¤  */
+		/* ï¿½ï¿½ï¿½Û¼Óµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½  ï¿½Ö¼ï¿½ 0.1ï¿½ï¿½ => 0.05ï¿½Ê·ï¿½ ï¿½ï¿½ï¿½ï¿½  */
 		int sleep_time =(int) (Float.parseFloat(IUtil.get("fpeg.sleep"))*1000);
 		if (sleep_time < 50) sleep_time = 50;
 
@@ -155,7 +155,7 @@ public class DebitBinHandler extends Thread
 			try {
 				//if (in != null) in.close();
 			} catch (Exception e) {
-				System.out.println(e + "=> ´Ý±â ½ÇÆÐ");
+				System.out.println(e);
 			}
 		}
 	}
@@ -327,7 +327,7 @@ public class DebitBinHandler extends Thread
 
 		in = new DataInputStream(s_cs.getInputStream());
 
-		/* Á¾·áµÉ¶§±îÁö ÀÐÀÚ */
+		/* ï¿½ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 		while (true)
 		{
 			rtn_len = in.read(smsg.mbuf, sidx, 3000);
@@ -335,7 +335,7 @@ public class DebitBinHandler extends Thread
 			if (rtn_len <=0)
 			{
 				/*
-            LUtil.println("DEBIT_BIN", "DEBUG processServerMsg:("+rtn_len+") ¼¼¼Ç Á¾·áµÊ");
+            LUtil.println("DEBIT_BIN", "DEBUG processServerMsg:("+rtn_len+") ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½");
 				 */
 				break;
 			}
@@ -393,7 +393,7 @@ public class DebitBinHandler extends Thread
 			try {
 				if (in != null) in.close();
 			} catch (Exception e) {
-				System.out.println(e + "=> ´Ý±â ½ÇÆÐ");
+				System.out.println(e + "=> ï¿½Ý±ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			}
 		}
 
@@ -412,9 +412,9 @@ public class DebitBinHandler extends Thread
 
 		byte[] buf = aes_128_ecb_decrypt(hmsg.key ,enc_counter ,0 ,16);
 
-		if (!msg_to_mem_rnd(buf)) /* ³­¼ö À§Ä¡ ÁöÁ¤½Ã ¸¶Áö¸· ¼ö½Å°ªº¸´Ù ÀûÀº °ªÀÌ ¿Ã ¼ö´Â ¾ø´Ù. */
+		if (!msg_to_mem_rnd(buf)) /* ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. */
 		{
-			throw new IllegalStateException("ERROR:() ³­¼öÀ§Ä¡Á¤º¸¿À·ù!!");
+			throw new IllegalStateException("ERROR:() ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!");
 		}
 
 		byte[] wbuf = speed_ctr_decrypt(enc_data, enc_data.length);
@@ -429,7 +429,7 @@ public class DebitBinHandler extends Thread
 	{
 		byte[] iv = aes_128_ecb_decrypt(hmsg.key ,enc_iv, 0, 16);
 
-		/* IV¸¦ ³­¼ö·Î Ã¤¿î´Ù. */
+		/* IVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½. */
 		int t1=0, t2=0;
 		byte[] nonce = new byte[16];
 		for(int i=0; i<7; i++)
@@ -439,7 +439,7 @@ public class DebitBinHandler extends Thread
 		}
 
 		byte uc1=0, uc2=0;
-		if (iv[14] != (uc1 = calculate_lrc(iv ,14)) || iv[15] != (uc2 = (byte)(hmsg.key[13]^iv[13])))/* ¿¬»ê°á°ú¸¦ ¹Ù·Î ºñ±³ÇÏ¸é ¾ÈµÈ´Ù. */
+		if (iv[14] != (uc1 = calculate_lrc(iv ,14)) || iv[15] != (uc2 = (byte)(hmsg.key[13]^iv[13])))/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½. */
 		{
 			throw new IllegalStateException("ERROR:() invalid IV");
 		}
@@ -520,7 +520,7 @@ public class DebitBinHandler extends Thread
 		System.arraycopy(rnd_msg.getBytes() ,0 ,tmp_bytes ,5 ,10);
 		tmp_bytes[5] = '0';
 
-		/* ³­¼ö1°³´ç 80byteÀÌ´Ï±î 9ÀÚ¸®¸¸ µÇ¾îµµ 80±â°¡´Ù  FF RN1 RN2 RN3 RN4 CRC 30 1~9 */
+		/* ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ 80byteï¿½Ì´Ï±ï¿½ 9ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ç¾îµµ 80ï¿½â°¡ï¿½ï¿½  FF RN1 RN2 RN3 RN4 CRC 30 1~9 */
 		tmp_bytes[0] = (byte)0xff;                        /* 0 - FF  */
 
 		tmp_bytes[1] = (byte)(SO_RND.nextInt(255) & 0xff);               /* 1 - RN1 */
@@ -586,12 +586,12 @@ public class DebitBinHandler extends Thread
 
 			RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(modulus, publicExponent);
 
-			// JDK 1.4 ÀÌÇÏ¿¡¼­´Â BouncyCastleProvider¸¦ »ç¿ë(¾Æ·¡ÁÖ¼®), JDK1.4ÀÌ»ó¿¡¼­´Â 2048bitÁö¿ø(US_export_policy.jar ,local_policy.jar)À» À§ÇÑ policyÀû¿ë ÇÊ¿ä
+			// JDK 1.4 ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ BouncyCastleProviderï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½Æ·ï¿½ï¿½Ö¼ï¿½), JDK1.4ï¿½Ì»ó¿¡¼ï¿½ï¿½ï¿½ 2048bitï¿½ï¿½ï¿½ï¿½(US_export_policy.jar ,local_policy.jar)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ policyï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 			//KeyFactory keyfactory = KeyFactory.getInstance("RSA", CIPHER_PROVIDER);
 			KeyFactory keyfactory = KeyFactory.getInstance("RSA");
 			java.security.PublicKey publickey = keyfactory.generatePublic(pubKeySpec);
 
-			// JDK 1.4 ÀÌÇÏ¿¡¼­´Â BouncyCastleProvider¸¦ »ç¿ë(¾Æ·¡ÁÖ¼®), JDK1.4ÀÌ»ó¿¡¼­´Â 2048bitÁö¿ø(US_export_policy.jar ,local_policy.jar)À» À§ÇÑ policyÀû¿ë ÇÊ¿ä
+			// JDK 1.4 ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ BouncyCastleProviderï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½Æ·ï¿½ï¿½Ö¼ï¿½), JDK1.4ï¿½Ì»ó¿¡¼ï¿½ï¿½ï¿½ 2048bitï¿½ï¿½ï¿½ï¿½(US_export_policy.jar ,local_policy.jar)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ policyï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 			//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding",CIPHER_PROVIDER);
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 
@@ -661,13 +661,13 @@ public class DebitBinHandler extends Thread
 
 	public byte[] ReadMsg(DataInputStream in) throws Exception
 	{
-		int msg_len = 4; /* ±æÀÌ */
+		int msg_len = 4; /* ï¿½ï¿½ï¿½ï¿½ */
 		int rtn_len = 0;
 
 		byte[]   b_len = new byte[msg_len];
 		if (msg_len != (rtn_len = in.read(b_len, 0, msg_len)))
 		{
-			throw new IOException("ReadMsg1 error - (" + rtn_len + ")¿À·ù!!");
+			throw new IOException("ReadMsg1 error - (" + rtn_len + ")ï¿½ï¿½ï¿½ï¿½!!");
 		}
 
 		/*
@@ -678,11 +678,11 @@ public class DebitBinHandler extends Thread
 
 		byte[]   rbuf = new byte[msg_len+4];
 
-		System.arraycopy(b_len, 0, rbuf, 0, 4); /* ±æÀÌº¹»ç */
+		System.arraycopy(b_len, 0, rbuf, 0, 4); /* ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ */
 
 		if (msg_len != (rtn_len = in.read(rbuf, 4, msg_len)))
 		{
-			throw new IOException("ReadMsg2 error - (" + rtn_len + ")¿À·ù!!");
+			throw new IOException("ReadMsg2 error - (" + rtn_len + ")ï¿½ï¿½ï¿½ï¿½!!");
 		}
 
 		return rbuf;
@@ -700,15 +700,15 @@ public class DebitBinHandler extends Thread
 		{
 			if (rest_len != (rtn_len = in.read(rbuf, read_len, rest_len)))
 			{
-				/* Àü¹®±æÀÌº¸´Ù Âª´Ù */
+				/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ Âªï¿½ï¿½ */
 				if (rtn_len > 0)
 				{
-					LUtil.println("DEBIT_BIN", "ReadLine Ãß°¡µ¥ÀÌÅÍ ¼ö½Å - ¼ö½Å´ë»óÅ©±â:"+ rest_len + " ¼ö½ÅÅ©±â: "+ rtn_len );
+					LUtil.println("DEBIT_BIN", "ReadLine ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½Å´ï¿½ï¿½Å©ï¿½ï¿½:"+ rest_len + " ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½: "+ rtn_len );
 					rest_len -= rtn_len;      
 					read_len += rtn_len;
 					continue;
 				}
-				throw new IOException("ERROR! ReadLine msg short - ¼ö½Å´ë»óÅ©±â:"+ rest_len + " ¼ö½ÅÅ©±â: "+ rtn_len );
+				throw new IOException("ERROR! ReadLine msg short - ï¿½ï¿½ï¿½Å´ï¿½ï¿½Å©ï¿½ï¿½:"+ rest_len + " ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½: "+ rtn_len );
 			}
 
 			break;
@@ -736,7 +736,7 @@ public class DebitBinHandler extends Thread
 
 			LUtil.println("SND","[CORP->DAEMON] req_msg["+new String (msg_buf, 0, msg_buf.length, "8859_1")+"] len["+msg_buf.length+"]");
 
-			/* ÁõºùÀÚ·á´Â  ÁõºùÀÚ·á Ãß°¡·Î ¼ö½ÅÇØ¾ßµÈ´Ù. */
+			/* ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ßµÈ´ï¿½. */
 			if (MsgCode.equals("0600601"))
 			{
 
@@ -754,7 +754,7 @@ public class DebitBinHandler extends Thread
 					if (rest_len == 0) break;
 				}
 
-				LUtil.println("DEBIT_BIN", "ÁõºùÆÄÀÏ size[" + t_len + "]");
+				LUtil.println("DEBIT_BIN", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ size[" + t_len + "]");
 
 
 				buf = new byte[msg_buf.length + t_len];

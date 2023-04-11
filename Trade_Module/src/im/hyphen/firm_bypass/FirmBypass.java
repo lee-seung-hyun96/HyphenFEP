@@ -10,6 +10,7 @@ public class FirmBypass{
 	public static void main(String[] args) throws Exception {
 		//		CUtil.setConfig(args[0]);
 		String config_path = System.getProperty("user.dir") + "\\conf\\config.ini";
+		System.out.println( System.getProperty("user.dir"));
 		String system_path = System.getProperty("user.dir") + "\\conf\\system.ini";
 //		String path = "/home/firmbk/kst/Trade_Module/Trade_Module/conf/config.ini";
 //		System.out.println(path);
@@ -23,7 +24,8 @@ public class FirmBypass{
 		DeleteLog.start();
 		
 		new MsgSender().start();
-		new MsgReceiver().start();
+		MsgReceiver msgReceiver = new MsgReceiver();
+		msgReceiver.start();
 		
 		
 	}
