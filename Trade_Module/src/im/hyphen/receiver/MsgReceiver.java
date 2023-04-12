@@ -1,9 +1,9 @@
 package im.hyphen.receiver;
 
-import im.hyphen.util.CUtil;
-import im.hyphen.util.DUtil;
-import im.hyphen.util.EUtil;
-import im.hyphen.util.SUtil;
+import im.hyphen.msgVO.M3000700;
+import im.hyphen.msgVO.M4000501;
+import im.hyphen.msgVO.M8000601;
+import im.hyphen.util.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,6 +27,12 @@ public class MsgReceiver extends Thread{
     public MsgReceiver(){
 
 
+    }
+
+    public void run()
+    {
+
+
         /* Line Type */
         LineType = CUtil.get("COMM_LINE_TYPE");		/* Private Line; P , Internet LIne: I */
         if (LineType == null || LineType.length() == 0) LineType = "Y";
@@ -44,7 +50,7 @@ public class MsgReceiver extends Thread{
         Encoding = CUtil.get("ENCODING");
         if (Encoding == null || Encoding.length() == 0) Encoding = "ksc5601";
 
-        System.out.println("Process Start COMM_LINE_TYPE["+LineType+"] ENCODING["+Encoding+"] LISTEN_PORT["+LISTEN_PORT+"]");
+        LUtil.println("INFO","Process Start COMM_LINE_TYPE["+LineType+"] ENCODING["+Encoding+"] LISTEN_PORT["+LISTEN_PORT+"]");
 
         ServerSocket ss = null;
         try {
@@ -54,87 +60,89 @@ public class MsgReceiver extends Thread{
             while(true)
             {
                 cs = ss.accept();
-                start();
+                DataOutputStream out         = null;
+                DataInputStream in          = null;
+                String              read_msg    = null;
+
+
+                int read_len = 0, rtn_len = 0;
+
+                try {
+
+                    in = new DataInputStream(cs.getInputStream());
+
+
+                    byte[]	read_buf = new byte[MSG_LEN];
+                    if (0 >= (rtn_len = in.read(read_buf, read_len, MSG_LEN)))
+                    {
+                        throw new IOException("Read error - " + rtn_len + "read Byte!!");
+                    }
+                    //LUtil.println(read_len + "   " + rtn_len);
+                    read_len = read_len + rtn_len;
+
+
+                    /* Internet line */
+                    if (LineType.equals("I") || LineType.equals("i") )
+                    {
+
+                        byte[]	dec_read_buf = new byte[2048];
+                        byte[]	enc_send_buf = new byte[2048];
+                        byte[]	dec_send_buf = new byte[2048];
+
+
+                        byte[]  enc_read_buf = new byte[read_len];
+                        System.arraycopy(read_buf,0,enc_read_buf,0,read_len);
+
+                        dec_read_buf = EUtil.udecode_3des(Encrypt_Key.getBytes(), enc_read_buf);
+
+                        LUtil.println("RCV" , SUtil.toHanE(dec_read_buf, Encoding) );
+
+                        dec_send_buf = parseMsg(dec_read_buf);
+
+                        enc_send_buf = EUtil.uencode_3des(Encrypt_Key.getBytes(), dec_send_buf);
+
+                        out = new DataOutputStream(cs.getOutputStream());
+                        out.write(enc_send_buf);
+                        out.flush();
+
+                        LUtil.println("SND",  SUtil.toHanE(dec_send_buf, Encoding) );
+                    }
+                    /* private line */
+                    else
+                    {
+
+                        byte[] fixed_read_buf = new byte[read_len];
+                        fixed_read_buf = Arrays.copyOf(read_buf, read_len);
+                        //LUtil.println(read_len);
+                        LUtil.println("RCV" , SUtil.toHanE(fixed_read_buf, Encoding));
+
+                        byte[] send_buf = parseMsg(fixed_read_buf);
+
+
+                        out = new DataOutputStream(cs.getOutputStream());
+                        out.write(send_buf);
+                        out.flush();
+
+                        LUtil.println("SND",  SUtil.toHanE(send_buf, Encoding));
+                    }
+
+
+                }catch (Exception e) {
+                    LUtil.println("ERROR", e.getMessage());
+                    e.printStackTrace();
+                }finally{
+                    try{if (in != null) in.close();}catch(Exception e){};
+                    try{if (out != null) out.close();}catch(Exception e){};
+                    try{if (cs != null) cs.close();}catch(Exception e){};
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void run()
-    {
-        DataOutputStream out         = null;
-        DataInputStream in          = null;
-
-        int read_len = 0, rtn_len = 0;
-
-        try {
-
-            in = new DataInputStream(cs.getInputStream());
 
 
-            byte[]	read_buf = new byte[MSG_LEN];
-            if (0 >= (rtn_len = in.read(read_buf, read_len, MSG_LEN)))
-            {
-                throw new IOException("Read error - " + rtn_len + "read Byte!!");
-            }
-            System.out.println(read_len + "   " + rtn_len);
-            read_len = read_len + rtn_len;
 
 
-            /* Internet line */
-            if (LineType.equals("I") || LineType.equals("i") )
-            {
-
-                byte[]	dec_read_buf = new byte[2048];
-                byte[]	enc_send_buf = new byte[2048];
-                byte[]	dec_send_buf = new byte[2048];
-
-
-                byte[]  enc_read_buf = new byte[read_len];
-                System.arraycopy(read_buf,0,enc_read_buf,0,read_len);
-
-                dec_read_buf = EUtil.udecode_3des(Encrypt_Key.getBytes(), enc_read_buf);
-
-                System.out.println("RCV_MSG=[" + SUtil.toHanE(dec_read_buf, Encoding) + "]");
-
-                dec_send_buf = parseMsg(dec_read_buf);
-
-                enc_send_buf = EUtil.uencode_3des(Encrypt_Key.getBytes(), dec_send_buf);
-
-                out = new DataOutputStream(cs.getOutputStream());
-                out.write(enc_send_buf);
-                out.flush();
-
-                System.out.println("SND_MSG=[" + SUtil.toHanE(dec_send_buf, Encoding) + "]");
-            }
-            /* private line */
-            else
-            {
-
-                byte[] fixed_read_buf = new byte[read_len];
-                fixed_read_buf = Arrays.copyOf(read_buf, read_len);
-                System.out.println("RCV_MSG=[" + SUtil.toHanE(fixed_read_buf, Encoding) + "]");
-
-                byte[] send_buf = parseMsg(fixed_read_buf);
-
-
-                out = new DataOutputStream(cs.getOutputStream());
-                out.write(send_buf);
-                out.flush();
-
-                System.out.println("SND_MSG=[" + SUtil.toHanE(send_buf, Encoding) + "]");
-            }
-
-
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }finally{
-            try{if (in != null) in.close();}catch(Exception e){};
-            try{if (out != null) out.close();}catch(Exception e){};
-            try{if (cs != null) cs.close();}catch(Exception e){};
-        }
     }
 
     public byte[] parseMsg(byte[] byte_data) throws Exception
@@ -275,6 +283,71 @@ public class MsgReceiver extends Thread{
             byte[] read_buf = (byte[])byte_data.clone();
 
             read_buf[19+2] = '1';
+
+            if(ret) error_code = "0000";
+
+            byte[] b_resp_code = error_code.getBytes();
+
+            System.arraycopy(b_resp_code, 0, read_buf, 47, b_resp_code.length);
+            System.arraycopy(b_resp_code, 0, read_buf, 51, b_resp_code.length);
+
+            return read_buf;
+        }
+        else if (byte_data[23] == '4' && byte_data[24] == '0' && byte_data[25] == '0' && byte_data[26] == '0')
+        {
+            M4000501 m4000501 = new M4000501();
+            m4000501.parseMsg(byte_data);
+
+            ret = DUtil.insert4000501(m4000501);
+
+            String  error_code = "9999";
+            byte[] read_buf = (byte[])byte_data.clone();
+
+            read_buf[24] = '1';
+
+            if(ret) error_code = "0000";
+
+            byte[] b_resp_code = error_code.getBytes();
+
+            System.arraycopy(b_resp_code, 0, read_buf, 47, b_resp_code.length);
+            System.arraycopy(b_resp_code, 0, read_buf, 51, b_resp_code.length);
+
+            return read_buf;
+        }
+
+        else if (byte_data[23] == '8' && byte_data[24] == '0' && byte_data[25] == '0' && byte_data[26] == '0')
+        {
+            M8000601 m8000601 = new M8000601();
+            m8000601.parseMsg(byte_data);
+
+            ret = DUtil.insert8000601(m8000601);
+
+            String  error_code = "9999";
+            byte[] read_buf = (byte[])byte_data.clone();
+
+            read_buf[24] = '1';
+
+            if(ret) error_code = "0000";
+
+            byte[] b_resp_code = error_code.getBytes();
+
+            System.arraycopy(b_resp_code, 0, read_buf, 47, b_resp_code.length);
+            System.arraycopy(b_resp_code, 0, read_buf, 51, b_resp_code.length);
+
+            return read_buf;
+        }
+
+        else if (byte_data[23] == '3' && byte_data[24] == '0' && byte_data[25] == '0' && byte_data[26] == '0')
+        {
+            M3000700 m3000700 = new M3000700();
+            m3000700.parseMsg(byte_data);
+
+            ret = DUtil.insert3000700(m3000700);
+
+            String  error_code = "9999";
+            byte[] read_buf = (byte[])byte_data.clone();
+
+            read_buf[24] = '1';
 
             if(ret) error_code = "0000";
 

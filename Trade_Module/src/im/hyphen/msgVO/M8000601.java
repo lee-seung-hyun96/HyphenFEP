@@ -1,5 +1,7 @@
 package im.hyphen.msgVO;
 
+import im.hyphen.util.SUtil;
+
 public class M8000601 extends SDSHeader{
     private String account;
     private String inOutKubun;
@@ -183,5 +185,28 @@ public class M8000601 extends SDSHeader{
         this.reserved = reserved;
     }
 
-
+    public void parseMsg(byte[] msg){
+        int ipos = 0;
+        super.parseMsg(msg);
+        account         = SUtil.toHanX(msg, ipos, 16); ipos+=16;
+        inOutKubun      = SUtil.toHanX(msg, ipos, 2); ipos+=2;
+        tranDate        = SUtil.toHanX(msg, ipos, 8); ipos+=8;
+        tranTime        = SUtil.toHanX(msg, ipos, 6); ipos+=6;
+        tranSeqNo       = SUtil.toHanX(msg, ipos, 5); ipos+=5;
+        currency        = SUtil.toHanX(msg, ipos, 3); ipos+=3;
+        amt             = SUtil.toHanX(msg, ipos, 15); ipos+=15;
+        balance         = SUtil.toHanX(msg, ipos, 15); ipos+=15;
+        accountMemo     = SUtil.toHanX(msg, ipos, 14); ipos+=14;
+        cancelTranDate  = SUtil.toHanX(msg, ipos, 8); ipos+=8;
+        cancelOriSeqNo  = SUtil.toHanX(msg, ipos, 6); ipos+=6;
+        bankCode3       = SUtil.toHanX(msg, ipos, 3); ipos+=3;
+        branchCode      = SUtil.toHanX(msg, ipos, 3); ipos+=3;
+        branchName      = SUtil.toHanX(msg, ipos, 10); ipos+=10;
+        accountMemo2    = SUtil.toHanX(msg, ipos, 24); ipos+=24;
+        branchGiroCodel = SUtil.toHanX(msg, ipos, 7); ipos+=7;
+        tranKubun       = SUtil.toHanX(msg, ipos, 2); ipos+=2;
+        signAfterTran   = SUtil.toHanX(msg, ipos, 1); ipos+=1;
+        customerName    = SUtil.toHanX(msg, ipos, 12); ipos+=12;
+        reserved        = SUtil.toHanX(msg, ipos, 1740); ipos+=1740;
+    }
 }

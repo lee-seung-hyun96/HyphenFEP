@@ -154,6 +154,7 @@ public class DUtil
 					pstmt.setString (2, RequestDate.substring(8,14) );
 					pstmt.setString (3, htd[i].getCompCode() );
 					pstmt.setString (4, htd[i].getSeqNo() );
+
 					pstmt.executeUpdate();
 				}
 				con.commit();
@@ -654,7 +655,22 @@ public class DUtil
 	}
 
 	public static boolean insert3000700(M3000700 m3000700) {
-		return insert3000700(        m3000700.getSendRequestDate(),               /* 외화송금의뢰일자*/
+		return insert3000700(
+				m3000700.getTrCode(), /* Transaction Code [9] */
+				m3000700.getCompCode(), /* 은행부여 업체코드 [12] */
+				m3000700.getBankCode(), /* 은행 코드 [2] */
+				m3000700.getMsgCode(), /* 전문 코드 [4] */
+				m3000700.getKubun(), /* 업무 구분 [3] */
+				m3000700.getSendCnt(), /* 송신 횟수 [1] */
+				m3000700.getMsgNo(), /* 전문 번호 [6] */
+				m3000700.getSendDate(), /* 송신 일자 [8] */
+				m3000700.getSendTime(), /* 송신 시간 [6] */
+				m3000700.getRetCode(), /* 응답 코드 [4] */
+				m3000700.getSikByulCode(), /* 식별 코드 [9] */
+				m3000700.getSdsArea(), /* SDS 영역 [15] */
+				m3000700.getCompArea(), /* 업체 영역 [11] */
+				m3000700.getBankArea(), /* 은행 영역 [10] */
+				m3000700.getSendRequestDate(),               /* 외화송금의뢰일자*/
 				m3000700.getSendRequestSeqNo(),              /* 외화송금의뢰전문번호*/
 				m3000700.getCustomerNo(),                    /* 고객번호*/
 				m3000700.getmAccount(),                      /* 출금계좌번호(송금액)*/
@@ -696,58 +712,72 @@ public class DUtil
 			);
 	}
 
-	private static boolean  insert3000700(String sendRequestDate,String sendRequestSeqNo,String customerNo, String mAccount, String amt,String currency, String sendKubun,String senderName, String receiverName, String receiverAccount,String receiverAddress,String receiverMomo, String countryCode,String hostileCountry, String receiverBicCode,String receiverBankName,String msgFormat,String settlementBankCode,String settlementBanName, String routeBankCode1, String routeBankName1, String routeBankCode2, String routeBankName2, String routeBankCode3, String routeBankName3, String feeChargeAccountNo,String feePayer, String whichFeeAccount,String amtForTheirCurrency, String feeCurRate, String feeAmtForLocal, String feeCurRateForLocal,String feeToForeignBank,String currencyRateToForeignBank, String payCauseCode, String payCause, String transactionNo,String valueDate,String reserved)
+	private static boolean  insert3000700(String trCode, String compCode, String bankCode, String msgCode, String kubun, String sendCnt, String msgNo , String sendDate, String sendTime, String retCode, String sikByulCode, String sdsArea, String compArea, String bankArea,String sendRequestDate,String sendRequestSeqNo,String customerNo, String mAccount, String amt,String currency, String sendKubun,String senderName, String receiverName, String receiverAccount,String receiverAddress,String receiverMomo, String countryCode,String hostileCountry, String receiverBicCode,String receiverBankName,String msgFormat,String settlementBankCode,String settlementBanName, String routeBankCode1, String routeBankName1, String routeBankCode2, String routeBankName2, String routeBankCode3, String routeBankName3, String feeChargeAccountNo,String feePayer, String whichFeeAccount,String amtForTheirCurrency, String feeCurRate, String feeAmtForLocal, String feeCurRateForLocal,String feeToForeignBank,String currencyRateToForeignBank, String payCauseCode, String payCause, String transactionNo,String valueDate,String reserved)
 	{
 		Connection          con     = null;
 		PreparedStatement   pstmt   = null;
 
-		String  INS4_QRY = "INSERT INTO MSG3000700 (trCode,compCode,bankCode,msgCode,kubun,sendCnt,msgNo,sendDate,sendTime,retCode,sikByulCode,sdsArea,compArea,bankArea,account,inOutKubun,tranDate,tranTime,tranSeqNo,currency,amt,balance,accountMemo,cancelTranDate,cancelOriSeqNo,bankCode3,branchCode,branchName,accountMemo2,branchGiroCodel,tranKubun,signAfterTran,customerName,reserved) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String  INS4_QRY = "INSERT INTO MSG3000700 (trCode, compCode, bankCode, msgCode, kubun, sendCnt, msgNo , sendDate, sendTime, retCode, sikByulCode, sdsArea, compArea, bankArea,sendRequestDate,sendRequestSeqNo,customerNo, mAccount, amt,currency, sendKubun,senderName, receiverName, receiverAccount,receiverAddress,receiverMomo, countryCode,hostileCountry, receiverBicCode,receiverBankName,msgFormat,settlementBankCode,settlementBanName, routeBankCode1, routeBankName1, routeBankCode2, routeBankName2, routeBankCode3, routeBankName3, feeChargeAccountNo,feePayer, whichFeeAccount,amtForTheirCurrency, feeCurRate, feeAmtForLocal, feeCurRateForLocal,feeToForeignBank,currencyRateToForeignBank, payCauseCode, payCause, transactionNo,valueDate,reserved) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		try {
 			con = getConnection();
 			con.setAutoCommit(false);
 
 			pstmt   = con.prepareStatement(INS4_QRY);
+			pstmt.setString(1,trCode);
+			pstmt.setString(2,compCode);
+			pstmt.setString(3,bankCode);
+			pstmt.setString(4,msgCode);
+			pstmt.setString(5,kubun);
+			pstmt.setString(6,sendCnt);
+			pstmt.setString(7,msgNo);
+			pstmt.setString(8,sendDate);
+			pstmt.setString(9,sendTime);
+			pstmt.setString(10,retCode);
+			pstmt.setString(11,sikByulCode);
+			pstmt.setString(12,sdsArea);
+			pstmt.setString(13,compArea);
+			pstmt.setString(14,bankArea);
+			pstmt.setString(15,sendRequestDate);
+			pstmt.setString(16,sendRequestSeqNo);
+			pstmt.setString(17,customerNo);
+			pstmt.setString(18,mAccount);
+			pstmt.setString(19,amt);
+			pstmt.setString(20,currency);
+			pstmt.setString(21,sendKubun);
+			pstmt.setString(22,senderName);
+			pstmt.setString(23,receiverName);
+			pstmt.setString(24,receiverAccount);
+			pstmt.setString(25,receiverAddress);
+			pstmt.setString(26,receiverMomo);
+			pstmt.setString(27,countryCode);
+			pstmt.setString(28,hostileCountry);
+			pstmt.setString(29,receiverBicCode);
+			pstmt.setString(30,receiverBankName);
+			pstmt.setString(31,msgFormat);
+			pstmt.setString(32,settlementBankCode);
+			pstmt.setString(33,settlementBanName);
+			pstmt.setString(34,routeBankCode1);
+			pstmt.setString(35,routeBankName1);
+			pstmt.setString(36,routeBankCode2);
+			pstmt.setString(37,routeBankName2);
+			pstmt.setString(38,routeBankCode3);
+			pstmt.setString(39,routeBankName3);
+			pstmt.setString(40,feeChargeAccountNo);
+			pstmt.setString(41,feePayer);
+			pstmt.setString(42,whichFeeAccount);
+			pstmt.setString(43,amtForTheirCurrency);
+			pstmt.setString(44,feeCurRate);
+			pstmt.setString(45,feeAmtForLocal);
+			pstmt.setString(46,feeCurRateForLocal);
+			pstmt.setString(47,feeToForeignBank);
+			pstmt.setString(48,currencyRateToForeignBank);
+			pstmt.setString(49,payCauseCode);
+			pstmt.setString(50,payCause);
+			pstmt.setString(51,transactionNo);
+			pstmt.setString(52,valueDate);
+			pstmt.setString(53,reserved);
 
-			pstmt.setString( 1,sendRequestDate);
-			pstmt.setString( 2,sendRequestSeqNo);
-			pstmt.setString( 3,customerNo);
-			pstmt.setString( 4,mAccount);
-			pstmt.setString( 5,amt);
-			pstmt.setString( 6,currency);
-			pstmt.setString( 7,sendKubun);
-			pstmt.setString( 8,senderName);
-			pstmt.setString( 9,receiverName);
-			pstmt.setString( 10,receiverAccount);
-			pstmt.setString( 11,receiverAddress);
-			pstmt.setString( 12,receiverMomo);
-			pstmt.setString( 13,countryCode);
-			pstmt.setString( 14,hostileCountry);
-			pstmt.setString( 15,receiverBicCode);
-			pstmt.setString( 16,receiverBankName);
-			pstmt.setString( 17,msgFormat);
-			pstmt.setString( 18,settlementBankCode);
-			pstmt.setString( 19,settlementBanName);
-			pstmt.setString( 20,routeBankCode1);
-			pstmt.setString( 21,routeBankName1);
-			pstmt.setString( 22,routeBankCode2);
-			pstmt.setString( 23,routeBankName2);
-			pstmt.setString( 24,routeBankCode3);
-			pstmt.setString( 25,routeBankName3);
-			pstmt.setString( 26,feeChargeAccountNo);
-			pstmt.setString( 27,feePayer);
-			pstmt.setString( 28,whichFeeAccount);
-			pstmt.setString( 29,amtForTheirCurrency);
-			pstmt.setString( 30,feeCurRate);
-			pstmt.setString( 31,feeAmtForLocal);
-			pstmt.setString( 32,feeCurRateForLocal);
-			pstmt.setString( 33,feeToForeignBank);
-			pstmt.setString( 34,currencyRateToForeignBank);
-			pstmt.setString( 35,payCauseCode);
-			pstmt.setString( 36,payCause);
-			pstmt.setString( 37,transactionNo);
-			pstmt.setString( 38,valueDate);
-			pstmt.setString( 39,reserved);
 
 
 			pstmt.executeUpdate();
@@ -793,6 +823,147 @@ public class DUtil
 		}
 		return false;
 	}
+
+
+	public static boolean insert4000501(M4000501 m4000501) {
+		return insert4000501(
+				m4000501.getTrCode(), /* Transaction Code [9] */
+				m4000501.getCompCode(), /* 은행부여 업체코드 [12] */
+				m4000501.getBankCode(), /* 은행 코드 [2] */
+				m4000501.getMsgCode(), /* 전문 코드 [4] */
+				m4000501.getKubun(), /* 업무 구분 [3] */
+				m4000501.getSendCnt(), /* 송신 횟수 [1] */
+				m4000501.getMsgNo(), /* 전문 번호 [6] */
+				m4000501.getSendDate(), /* 송신 일자 [8] */
+				m4000501.getSendTime(), /* 송신 시간 [6] */
+				m4000501.getRetCode(), /* 응답 코드 [4] */
+				m4000501.getSikByulCode(), /* 식별 코드 [9] */
+				m4000501.getSdsArea(), /* SDS 영역 [15] */
+				m4000501.getCompArea(), /* 업체 영역 [11] */
+				m4000501.getBankArea(), /* 은행 영역 [10] */
+				m4000501.getTrKubun(),
+				m4000501.getAccountNo(),
+				m4000501.getTrDate(),
+				m4000501.getTrTime(),
+				m4000501.getTrSeqno(),
+				m4000501.getEbondNo(),
+				m4000501.getEbondKind(),
+				m4000501.getEbondAmount(),
+				m4000501.getEbondMaker(),
+				m4000501.getEbondDeadline(),
+				m4000501.getEbondDepoBranch(),
+				m4000501.getEbondPayBankCode(),
+				m4000501.getEbondPayBankName(),
+				m4000501.getEbondPayBranchName(),
+				m4000501.getEbondCollectionKubun(), /*추심구분 1:교환, 2:추심, 3:당점*/
+				m4000501.getEbondPayerCode(),      /*사업자번호, 주민등록번호*/
+				m4000501.getAfterPayAmount(),
+				m4000501.getMakerKubun(),         /*자수 타수 구분, 1:자수, 9:타수*/
+				m4000501.getCancelDate(),
+				m4000501.getCancelOriSeqNo(),
+				m4000501.getReserved()
+
+				);
+	}
+
+
+
+	private static boolean  insert4000501(String trCode, String compCode,String bankCode,String msgCode,String kubun,String sendCnt,String msgNo ,String sendDate,String sendTime,String retCode,String sikByulCode,String sdsArea,String compArea,String bankArea,String trKubun,String accountNo,String trDate,String trTime,String trSeqno,String ebondNo,String ebondKind,String ebondAmount,String ebondMaker,String ebondDeadline,String ebondDepoBranch,String ebondPayBankCode,String ebondPayBankName,String ebondPayBranchName,String ebondCollectionKubun ,String ebondPayerCode       ,String afterPayAmount,String makerKubun           ,String cancelDate,String cancelOriSeqNo,String reserved )
+	{
+		Connection          con     = null;
+		PreparedStatement   pstmt   = null;
+
+		String  INS4_QRY = "INSERT INTO MSG4000501 (trCode, compCode,bankCode,msgCode,kubun,sendCnt,msgNo ,sendDate,sendTime,retCode,sikByulCode,sdsArea,compArea,bankArea,trKubun,accountNo,trDate,trTime,trSeqno,ebondNo,ebondKind,ebondAmount,ebondMaker,ebondDeadline,ebondDepoBranch,ebondPayBankCode,ebondPayBankName,ebondPayBranchName,ebondCollectionKubun ,ebondPayerCode       ,afterPayAmount,makerKubun, cancelDate, cancelOriSeqNo, reserved) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+		try {
+			con = getConnection();
+			con.setAutoCommit(false);
+
+			pstmt   = con.prepareStatement(INS4_QRY);
+
+			pstmt.setString(1,trCode);
+			pstmt.setString(2,compCode);
+			pstmt.setString(3,bankCode);
+			pstmt.setString(4,msgCode);
+			pstmt.setString(5,kubun);
+			pstmt.setString(6,sendCnt);
+			pstmt.setString(7,msgNo );
+			pstmt.setString(8,sendDate);
+			pstmt.setString(9,sendTime);
+			pstmt.setString(10,retCode);
+			pstmt.setString(11,sikByulCode);
+			pstmt.setString(12,sdsArea);
+			pstmt.setString(13,compArea);
+			pstmt.setString(14,bankArea);
+			pstmt.setString(15,trKubun);
+			pstmt.setString(16,accountNo);
+			pstmt.setString(17,trDate);
+			pstmt.setString(18,trTime);
+			pstmt.setString(19,trSeqno);
+			pstmt.setString(20,ebondNo);
+			pstmt.setString(21,ebondKind);
+			pstmt.setString(22,ebondAmount);
+			pstmt.setString(23,ebondMaker);
+			pstmt.setString(24,ebondDeadline);
+			pstmt.setString(25,ebondDepoBranch);
+			pstmt.setString(26,ebondPayBankCode);
+			pstmt.setString(27,ebondPayBankName);
+			pstmt.setString(28,ebondPayBranchName);
+			pstmt.setString(29,ebondCollectionKubun );
+			pstmt.setString(30,ebondPayerCode       );
+			pstmt.setString(31,afterPayAmount);
+			pstmt.setString(32,makerKubun);
+			pstmt.setString(33,cancelDate);
+			pstmt.setString(34,cancelOriSeqNo);
+			pstmt.setString(35,reserved);
+
+
+
+			pstmt.executeUpdate();
+
+			con.commit();
+
+			return true;
+
+		}catch(Throwable e) {
+			int sql_code = 0;
+			if (e instanceof SQLException)  /* case 1: ORA-00001 (duplicate keys) */
+			{
+				sql_code = ((SQLException)e).getErrorCode();
+			}
+			try{con.rollback();}catch(SQLException se){}
+
+			if(sql_code == 1){
+				LUtil.println("SND","Oracle duplicate keys");
+				return true;
+			}
+			else if (sql_code == -239){
+				LUtil.println("SND","Informix duplicate keys");
+				return true;
+			}
+			else if (sql_code == 2627 || sql_code == 2601){
+				LUtil.println("SND","MSSQL duplicate keys");
+				return true;
+			}
+			else if (sql_code == 1062){
+				LUtil.println("SND","MYSQL duplicate keys");
+				return true;
+			}
+			else if (sql_code == -803){
+				LUtil.println("SND","DB2 duplicate keys");
+				return true;
+			}
+
+			LUtil.println("SND",e);
+
+		} finally {
+			try {if(pstmt!=null){pstmt.close();pstmt= null;}}catch(Exception e){}
+			try {if(con !=null) {con.close( );/*con = null;*/}}catch(Exception e){}
+		}
+		return false;
+	}
+
+
 	public static String getCurrDate()
 	{
 		return getDate(0);

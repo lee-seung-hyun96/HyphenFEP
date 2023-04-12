@@ -3,25 +3,25 @@ package im.hyphen.msgVO;
 import java.io.InputStream;
 
 public class HyphenTradeData {
-	
-	private String errCode;		 /*¿¡·¯ÄÚµå*/
-    private String reqDate;		 /*¿äÃ»ÀÏÀÚ*/
-    private String reqTime;		 /*¿äÃ»ÀÏÀÚ*/
-    private String svcType; 	 /*¼­ºñ½ºÅ¸ÀÔ*/
-    private String bankCode; 	 /*ÀºÇàÄÚµå*/
-    private String compCode;	 /*¾÷Ã¼ÄÚµå*/
-    private String seqNo; 	 	 /*Àü¹®¹øÈ£*/
-    private String msgCode; 	 /*Àü¹®±¸ºĞ*/
-    private String sendFlag;	 /*Àü¼Û¿©ºÎ*/
-    private String recvFlag;	 /*ÀÀ´ä¼ö½Å¿©ºÎ*/
-    private String sendData;	 /*¼Û½ÅÀÏÀÚ*/
-    private String sendTime;	 /*¼Û½Å½Ã°£*/
-    private String recvDate;	 /*¼ö½ÅÀÏÀÚ*/
-    private String recvTime;	 /*¼ö½Å½Ã°£*/
-    private String sendMsg;		 /*¿äÃ»Àü¹®*/
-    private String recvMsg;		 /*ÀÀ´äÀü¹®*/
-    
-    private InputStream bin_in = null;	/*Áõºùµ¥ÀÌÅÍ*/
+
+	private String errCode;		 /*ì—ëŸ¬ì½”ë“œ*/
+	private String reqDate;		 /*ìš”ì²­ì¼ì*/
+	private String reqTime;		 /*ìš”ì²­ì¼ì*/
+	private String svcType; 	 /*ì„œë¹„ìŠ¤íƒ€ì…*/
+	private String bankCode; 	 /*ì€í–‰ì½”ë“œ*/
+	private String compCode;	 /*ì—…ì²´ì½”ë“œ*/
+	private String seqNo; 	 	 /*ì „ë¬¸ë²ˆí˜¸*/
+	private String msgCode; 	 /*ì „ë¬¸êµ¬ë¶„*/
+	private String sendFlag;	 /*ì „ì†¡ì—¬ë¶€*/
+	private String recvFlag;	 /*ì‘ë‹µìˆ˜ì‹ ì—¬ë¶€*/
+	private String sendData;	 /*ì†¡ì‹ ì¼ì*/
+	private String sendTime;	 /*ì†¡ì‹ ì‹œê°„*/
+	private String recvDate;	 /*ìˆ˜ì‹ ì¼ì*/
+	private String recvTime;	 /*ìˆ˜ì‹ ì‹œê°„*/
+	private String sendMsg;		 /*ìš”ì²­ì „ë¬¸*/
+	private String recvMsg;		 /*ì‘ë‹µì „ë¬¸*/
+
+	private InputStream bin_in = null;	/*ì¦ë¹™ë°ì´í„°*/
 	
     private int tCnt;
 	public int gettCnt() {

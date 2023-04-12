@@ -1,5 +1,7 @@
 package im.hyphen.msgVO;
 
+import im.hyphen.util.SUtil;
+
 public class M3000700  extends SDSHeader{
     private String sendRequestDate;               /* 외화송금의뢰일자*/
     private String sendRequestSeqNo;              /* 외화송금의뢰전문번호*/
@@ -395,5 +397,49 @@ public class M3000700  extends SDSHeader{
                 + transactionNo
                 + valueDate
                 + reserved;
+    }
+
+    public void parseMsg(byte[] msg){
+        int ipos = 100;
+        super.parseMsg(msg);
+        sendRequestDate          =SUtil.toHanX(msg,ipos, 8); ipos +=8;
+        sendRequestSeqNo         =SUtil.toHanX(msg,ipos, 6); ipos +=6;
+        customerNo               =SUtil.toHanX(msg,ipos, 10); ipos +=10;
+        mAccount                 =SUtil.toHanX(msg,ipos, 16); ipos +=16;
+        amt                      =SUtil.toHanX(msg,ipos, 15); ipos +=15;
+        currency                 =SUtil.toHanX(msg,ipos, 3); ipos +=3;
+        sendKubun                =SUtil.toHanX(msg,ipos, 1); ipos +=1;
+        senderName               =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        receiverName             =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        receiverAccount          =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        receiverAddress          =SUtil.toHanX(msg,ipos, 105); ipos +=105;
+        receiverMomo             =SUtil.toHanX(msg,ipos, 140); ipos +=140;
+        countryCode              =SUtil.toHanX(msg,ipos, 2); ipos +=2;
+        hostileCountry           =SUtil.toHanX(msg,ipos, 1); ipos +=1;
+        receiverBicCode          =SUtil.toHanX(msg,ipos, 11); ipos +=11;
+        receiverBankName         =SUtil.toHanX(msg,ipos, 140); ipos +=140;
+        msgFormat                =SUtil.toHanX(msg,ipos, 1); ipos +=1;
+        settlementBankCode       =SUtil.toHanX(msg,ipos, 11); ipos +=11;
+        settlementBanName        =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        routeBankCode1           =SUtil.toHanX(msg,ipos, 11); ipos +=11;
+        routeBankName1           =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        routeBankCode2           =SUtil.toHanX(msg,ipos, 11); ipos +=11;
+        routeBankName2           =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        routeBankCode3           =SUtil.toHanX(msg,ipos, 11); ipos +=11;
+        routeBankName3           =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        feeChargeAccountNo       =SUtil.toHanX(msg,ipos, 16); ipos +=16;
+        feePayer                 =SUtil.toHanX(msg,ipos, 1); ipos +=1;
+        whichFeeAccount          =SUtil.toHanX(msg,ipos, 1); ipos +=1;
+        amtForTheirCurrency      =SUtil.toHanX(msg,ipos, 15); ipos +=15;
+        feeCurRate               =SUtil.toHanX(msg,ipos, 7); ipos +=7;
+        feeAmtForLocal           =SUtil.toHanX(msg,ipos, 15); ipos +=15;
+        feeCurRateForLocal       =SUtil.toHanX(msg,ipos, 7); ipos +=7;
+        feeToForeignBank         =SUtil.toHanX(msg,ipos, 15); ipos +=15;
+        currencyRateToForeignBank=SUtil.toHanX(msg,ipos, 7); ipos +=7;
+        payCauseCode             =SUtil.toHanX(msg,ipos, 3); ipos +=3;
+        payCause                 =SUtil.toHanX(msg,ipos, 35); ipos +=35;
+        transactionNo            =SUtil.toHanX(msg,ipos, 20); ipos +=20;
+        valueDate                =SUtil.toHanX(msg,ipos, 8); ipos +=8;
+        reserved                 =SUtil.toHanX(msg,ipos, 1002); ipos +=1002;
     }
 }
