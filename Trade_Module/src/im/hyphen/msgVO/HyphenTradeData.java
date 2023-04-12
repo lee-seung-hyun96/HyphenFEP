@@ -21,7 +21,7 @@ public class HyphenTradeData {
     private String sendMsg;
     private String recvMsg;
     
-    private InputStream bin_in = null;	/*����������*/
+    private InputStream bin_in = null;
 	
     private int tCnt;
 	public int gettCnt() {
