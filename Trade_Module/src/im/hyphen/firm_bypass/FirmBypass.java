@@ -9,9 +9,8 @@ public class FirmBypass{
 
 	public static void main(String[] args) throws Exception {
 		//		CUtil.setConfig(args[0]);
-		String config_path = System.getProperty("user.dir") + "\\conf\\config.ini";
-		System.out.println( System.getProperty("user.dir"));
-		String system_path = System.getProperty("user.dir") + "\\conf\\system.ini";
+		String config_path = args[0];
+		String system_path = args[1];
 //		String path = "/home/firmbk/kst/Trade_Module/Trade_Module/conf/config.ini";
 //		System.out.println(path);
 		CUtil.setConfig(config_path);

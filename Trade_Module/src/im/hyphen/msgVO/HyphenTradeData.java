@@ -3,25 +3,25 @@ package im.hyphen.msgVO;
 import java.io.InputStream;
 
 public class HyphenTradeData {
-	
-	private String errCode;
-    private String reqDate;
-    private String reqTime;
-    private String svcType;
-    private String bankCode;
-    private String compCode;
-    private String seqNo;
-    private String msgCode;
-    private String sendFlag;
-    private String recvFlag;
-    private String sendData;
-    private String sendTime;
-    private String recvDate;
-    private String recvTime;
-    private String sendMsg;
-    private String recvMsg;
-    
-    private InputStream bin_in = null;
+
+	private String errCode;		 /*에러코드*/
+	private String reqDate;		 /*요청일자*/
+	private String reqTime;		 /*요청일자*/
+	private String svcType; 	 /*서비스타입*/
+	private String bankCode; 	 /*은행코드*/
+	private String compCode;	 /*업체코드*/
+	private String seqNo; 	 	 /*전문번호*/
+	private String msgCode; 	 /*전문구분*/
+	private String sendFlag;	 /*전송여부*/
+	private String recvFlag;	 /*응답수신여부*/
+	private String sendData;	 /*송신일자*/
+	private String sendTime;	 /*송신시간*/
+	private String recvDate;	 /*수신일자*/
+	private String recvTime;	 /*수신시간*/
+	private String sendMsg;		 /*요청전문*/
+	private String recvMsg;		 /*응답전문*/
+
+	private InputStream bin_in = null;	/*증빙데이터*/
 	
     private int tCnt;
 	public int gettCnt() {
