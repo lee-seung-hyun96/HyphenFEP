@@ -22,7 +22,7 @@ public class SUtil
 		return sb.toString();
 	}
 
-	//ÃßÈÄ ¼öÁ¤ ¿¹Á¤
+	//ì¶”í›„ ìˆ˜ì • ì˜ˆì •
 
 	static String toHanD(byte[] bsrc, int idx, int len)
 	{
@@ -35,7 +35,7 @@ public class SUtil
 		return null;
 	}
 	
-	//°¡»ó°èÁÂ
+	//ê°€ìƒê³„ì¢Œ
 	public static String toHanX(byte[] bsrc, int idx, int len)
 	{
 		String str = toHan(bsrc, idx, len);
@@ -314,7 +314,7 @@ public class SUtil
     static
     {
         char S_HALF_CHAR = '!'  ,E_HALF_CHAR = '~';
-        char S_FULL_CHAR = '£¡' ,E_FULL_CHAR = '¢¦';
+        char S_FULL_CHAR = 'ï¼' ,E_FULL_CHAR = 'ï½';
 
         HALF_CHARS = new char[E_HALF_CHAR - S_HALF_CHAR + 1];
         FULL_CHARS = new char[HALF_CHARS.length];
@@ -325,11 +325,11 @@ public class SUtil
             FULL_CHARS[i] = (char)(S_FULL_CHAR + i);
         }
     }
-    // MS¿öµå°°Àº ÇÁ·Î±×·¥ÀÌ ÀÚµ¿À¸·Î ¹Ù²ã¹ö¸®´Â µµÇü¹®ÀÚ ¹× À¯»ç¹®ÀÚ
-	static char		SYMB_CHARS[]	= {'¡¡' ,'¡°'  ,'¡±'  ,'¡¯' ,'¡®' ,'¢ß'   ,'¡¦'	};
-	static String	HALF_CSTRS[]	= {" "  ,"\"" ,"\"" ,"'" ,"`" ,"(ÁÖ)" ,"..."};
+    // MSì›Œë“œê°™ì€ í”„ë¡œê·¸ë¨ì´ ìë™ìœ¼ë¡œ ë°”ê¿”ë²„ë¦¬ëŠ” ë„í˜•ë¬¸ì ë° ìœ ì‚¬ë¬¸ì
+	static char		SYMB_CHARS[]	= {'ã€€' ,'â€œ'  ,'â€'  ,'â€™' ,'â€˜' ,'ãˆœ'   ,'â€¦'	};
+	static String	HALF_CSTRS[]	= {" "  ,"\"" ,"\"" ,"'" ,"`" ,"(ì£¼)" ,"..."};
 
-    // Àü°¢¹®ÀÚ¸¦ ¹İ°¢¹®ÀÚ·Î º¯°æÇÑ´Ù.
+    // ì „ê°ë¬¸ìë¥¼ ë°˜ê°ë¬¸ìë¡œ ë³€ê²½í•œë‹¤.
     public static String full2half(String str)
     {
         if (str == null) return "";

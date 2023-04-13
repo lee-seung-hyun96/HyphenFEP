@@ -16,7 +16,7 @@ public class MsgSender extends Thread {
 		/*Thread sleep count*/
 		int THREAD_CNT = Integer.parseInt(CUtil.get("THREAD_CNT"));
 
-		//¾²·¹µåÇ® ÀÚ¿ø °ü¸® MAX = 5
+		//ì“°ë ˆë“œí’€ ìžì› ê´€ë¦¬ MAX = 5
 		if (THREAD_CNT >= 5) {
 			THREAD_CNT = 5;
 		}
