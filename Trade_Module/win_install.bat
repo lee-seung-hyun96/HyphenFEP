@@ -4,9 +4,9 @@ set SERVICE_NAME=HYPHEN_FEP
 set DISPLAY_NAME=HYPHEN_FEP
 set DESCRIPTION=Hyphen fep program
 set INSTALL_HOME="%CD%
-set CLASSPATH=%INSTALL_HOME%\lib\*\"
+set CLASSPATH=%INSTALL_HOME%\lib\*"
 set BINARYPATH=%INSTALL_HOME%\classes"
-set SOURCE_PATH=%INSTALL_HOME%\src\"
+set SOURCE_PATH=%INSTALL_HOME%\src
 set MAIN_CLASS=im.hyphen.firm_bypass.FirmBypass
 set CONFIG_FILE=\%INSTALL_HOME%\conf\config.ini\"
 set SYSTEM_FILE=\%INSTALL_HOME%\conf\system.ini\"
@@ -19,6 +19,10 @@ if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
 )
 
 set NSSM_PATH=%INSTALL_HOME%\nssm\nssm_%OPERATING_SYSTEM%"
+
+
+
+
 
 
 REM Check if JAVA_HOME is set
@@ -37,7 +41,10 @@ echo JAVA_HOME is set to : %JAVA_HOME%
 
 
 REM Compile the Java source code
-"%JAVA_HOME%\bin\javac.exe" -encoding UTF-8 -cp %CLASSPATH% -d classes -sourcepath %SOURCE_PATH%/im/hyphen/crypto/*.java %SOURCE_PATH%/im/hyphen/crypto/*.java %SOURCE_PATH%/im/hyphen/firm_bypass/*.java %SOURCE_PATH%/im/hyphen/msgVO/*.java %SOURCE_PATH%/im/hyphen/receiver/*.java %SOURCE_PATH%/im/hyphen/sender/*.java %SOURCE_PATH%/im/hyphen/util/*.java
+cd %INSTALL_HOME%
+"%JAVA_HOME%\bin\javac.exe" -encoding UTF-8 -cp %CLASSPATH% -d classes -sourcepath ./src ./src/im/hyphen/crypto/*.java  ./src/im/hyphen/firm_bypass/*.java ./src/im/hyphen/msgVO/*.java ./src/im/hyphen/receiver/*.java ./src/im/hyphen/sender/*.java ./src/im/hyphen/util/*.java
+set COM_CMD="%JAVA_HOME%\bin\javac.exe" -encoding UTF-8 -cp %CLASSPATH% -d classes -sourcepath ./src ./src/im/hyphen/crypto/*.java  ./src/im/hyphen/firm_bypass/*.java ./src/im/hyphen/msgVO/*.java ./src/im/hyphen/receiver/*.java ./src/im/hyphen/sender/*.java ./src/im/hyphen/util/*.java
+echo %COM_CMD%
 
 
 
